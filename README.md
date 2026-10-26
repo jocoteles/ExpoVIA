@@ -97,7 +97,7 @@ Para viabilizar a fluidez da expeirência imersiva e tempos viáveis de carregam
 
 #### Sala 3: As Sondas Voyager
 * **Modelo 3D:** *Sonda Espacial Voyager* (`voyager_LR.glb`) -- National Aeronautics and Space Administration / [NASA 3D Resources Hub](https://nasa.gov) -- Domínio Público.
-* **Trilha Sonora:** *Gymnopédie No. 1* (Erik Satie, 1888) -- Arranjo e execução por [Kevin MacLeod](https://commons.wikimedia.org/wiki/File:Kevin_MacLeod_-_Erik_Satie_Gymnopedie_No_1.ogg) (2011) -- [CC-BY-3.0](https://creativecommons.org/licenses/by-3.0/).
+* **Trilha Sonora:** *The Planets, Op. 32: VII. Neptune, the Mystic* (Gustav Holst, 1916) -- Execução por [United States Marine Band](https://commons.wikimedia.org) -- Domínio Público.
 * **Painel 1:** *O Disco de Ouro (Golden Record)* (`golden_disks.webp`) -- Registro oficial do disco fonográfico das naves Voyager (1977), NASA / JPL-Caltech -- Domínio Público.
 * **Painel 2:** *O Pálido Ponto Azul (Pale Blue Dot)* (`pale-blue-dot-revised.webp`) -- Fotografia da Terra a 6 bilhões de km pela Voyager 1 (1990), NASA / JPL-Caltech -- Domínio Público.
 * **Painel 3:** *O Grand Tour dos Planetas Gigantes* (`Voyager_probes_with_the_outer_worlds.webp`) -- Pintura em acrílico por Don Davis (c. 1980s), acervo NASA / JPL-Caltech -- Domínio Público.
@@ -110,7 +110,7 @@ Para viabilizar a fluidez da expeirência imersiva e tempos viáveis de carregam
 
 #### Sala 4: O Telescópio Espacial Hubble
 * **Modelo 3D:** *Hubble Space Telescope (HST)* (`hubble_LR.glb`) -- NASA / [NASA 3D Resources Hub](https://nasa.gov) -- Domínio Público.
-* **Trilha Sonora:** *The Planets, Op. 32: VII. Neptune, the Mystic* (Gustav Holst, 1916) -- Execução por [United States Marine Band](https://commons.wikimedia.org) -- Domínio Público.
+* **Trilha Sonora:** *Gymnopédie No. 1* (Erik Satie, 1888) -- Arranjo e execução por [Kevin MacLeod](https://commons.wikimedia.org/wiki/File:Kevin_MacLeod_-_Erik_Satie_Gymnopedie_No_1.ogg) (2011) -- [CC-BY-3.0](https://creativecommons.org/licenses/by-3.0/).
 * **Painel 1:** *Hubble Deep Field (1995)* (`HubbleDeepField.800px.webp`) -- Imagem histórica de campo profundo, Robert Williams / NASA, ESA, STScI (1996) -- Domínio Público.
 * **Painel 2:** *Os Pilares da Criação* (`Eagle_nebula_pillars.webp`) -- Nebulosa da Águia (M16), Jeff Hester e Paul Scowen (ASU) / NASA (1995) -- Domínio Público.
 * **Painel 3:** *A Miopia do Hubble e a Correção Óptica* (`hubble_optical_correction.webp`) -- Instalação do módulo COSTAR na missão STS-61 e galáxia M100, NASA (1993) -- Domínio Público.

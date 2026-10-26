@@ -1,5 +1,5 @@
-// Service Worker: estratégia híbrida + precache dinâmico via varredura de templates (Plano B)
-const CACHE_NAME = 'exposicao-virtual-v3'; // incremente sempre que mudar PRECACHE_CORE ou CDN_MAP
+// Service Worker: estratégia híbrida + precache dinâmico via varredura de templates
+const CACHE_NAME = 'exposicao-virtual-v4'; // incremente sempre que mudar PRECACHE_CORE ou CDN_MAP
 
 // ---------- PRECACHE CORE (mínimo essencial) ----------
 // Baixados sempre durante a instalação do Service Worker.
