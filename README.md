@@ -1,4 +1,4 @@
-
+[![DOI](https://zenodo.org/badge/1434572212.svg)](https://doi.org/10.5281/zenodo.23679029)
 
 # Exposição Virtual de Instrumentos Astronômicos
 
