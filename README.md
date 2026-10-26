@@ -186,7 +186,7 @@ O suporte a **PWA / Service Worker (Offline-First)** é ativado exclusivamente n
 
 ---
 
-### 1. Modo de Desenvolvimento Wi-Fi (Sem cabo / HTTPS Local)
+### 3.1 Modo de Desenvolvimento Wi-Fi (Sem cabo / HTTPS Local)
 
 É o fluxo mais rápido e direto para desenvolvimento e testes interativos sem necessidade de cabos:
 
@@ -213,7 +213,7 @@ O suporte a **PWA / Service Worker (Offline-First)** é ativado exclusivamente n
 
 ---
 
-### 2. Modo de Deploy Local com Cabo (USB / adb / HTTP Simples)
+### 3.2 Modo de Deploy Local com Cabo (USB / adb / HTTP Simples)
 
 Usado para testes locais com conexão por fio e caches sob demanda, sem a necessidade de certificados SSL:
 
@@ -243,7 +243,7 @@ Usado para testes locais com conexão por fio e caches sob demanda, sem a necess
 
 ---
 
-### 3. Modo Deploy GitHub Pages (Padrão de Produção / PWA 100% Offline)
+### 3.3 Modo Deploy GitHub Pages (Padrão de Produção / PWA 100% Offline)
 
 Modo padrão do repositório para distribuição final e uso autônomo sem fios nem servidores locais:
 
@@ -261,7 +261,7 @@ Modo padrão do repositório para distribuição final e uso autônomo sem fios 
 
 ---
 
-### 4. Licença
+## 4. Licença
 
 * **Código-Fonte:** Licenciado sob a [Licença MIT](LICENSE) (HTML, JavaScript, CSS, shaders e infraestrutura).
 * **Modelos 3D Autorais:** O modelo 3D do Telescópio de Herschel ([`assets/Telescopio_Herschel`](assets/Telescopio_Herschel/LICENSE.md)) e da Luneta de Galileu ([`assets/Luneta_Galileu`](assets/Luneta_Galileu/LICENSE.md)), desenvolvidos por João Teles de Carvalho Neto, são distribuídos sob a licença [Creative Commons Atribuição-CompartilhaIgual 4.0 Internacional (CC BY-SA 4.0)](https://creativecommons.org/licenses/by-sa/4.0/).
