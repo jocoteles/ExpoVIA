@@ -1,5 +1,5 @@
 // Service Worker: estratégia híbrida + precache dinâmico via varredura de templates (Plano B)
-const CACHE_NAME = 'exposicao-virtual-v1'; // incremente sempre que mudar PRECACHE_CORE ou CDN_MAP
+const CACHE_NAME = 'exposicao-virtual-v3'; // incremente sempre que mudar PRECACHE_CORE ou CDN_MAP
 
 // ---------- PRECACHE CORE (mínimo essencial) ----------
 // Baixados sempre durante a instalação do Service Worker.
@@ -102,50 +102,79 @@ self.addEventListener('activate', (event) => {
 
 // ---------- CACHE DINÂMICO DE TEMPLATES (Plano B) ----------
 let isDynamicCaching = false;
+
+async function notifyClients(msg) {
+    const clients = await self.clients.matchAll({ includeUncontrolled: true, type: 'window' });
+    for (const client of clients) {
+        try {
+            client.postMessage(msg);
+        } catch (e) {
+            // Ignora cliente fechado
+        }
+    }
+}
+
 async function cacheDynamicAssets(urls, client) {
     if (!Array.isArray(urls) || !urls.length || isDynamicCaching) return;
     isDynamicCaching = true;
 
     try {
         const cache = await caches.open(CACHE_NAME);
-        let cachedCount = 0;
-        let skippedCount = 0;
         const total = urls.length;
 
-        console.log(`[SW] Iniciando sincronização em segundo plano de ${total} assets das salas...`);
-
-        for (let i = 0; i < total; i++) {
-            const relUrl = urls[i];
+        // 1. Identifica quais assets NÃO estão no cache (demanda novo cache / nova versão)
+        const pendingUrls = [];
+        for (const relUrl of urls) {
             const fullUrl = new URL(relUrl, self.registration.scope).href;
+            const existing = await cache.match(fullUrl);
+            if (!existing) {
+                pendingUrls.push(fullUrl);
+            }
+        }
 
+        // Se todos os assets já estão em cache, nenhuma mensagem visual é necessária
+        if (pendingUrls.length === 0) {
+            console.log(`[SW] Todos os ${total} assets das salas já estão no cache. Nenhuma sincronização necessária.`);
+            return;
+        }
+
+        console.log(`[SW] Nova versão / assets não cacheados detectados: baixando ${pendingUrls.length} de ${total} arquivos...`);
+        await notifyClients({
+            type: 'CACHE_START',
+            totalToDownload: pendingUrls.length,
+            total: total
+        });
+
+        let cachedCount = 0;
+        for (let i = 0; i < pendingUrls.length; i++) {
+            const fullUrl = pendingUrls[i];
             try {
-                const existing = await cache.match(fullUrl);
-                if (existing) {
-                    skippedCount++;
-                } else {
-                    const res = await fetch(fullUrl, { cache: 'no-cache' });
-                    if (res && res.status === 200) {
-                        await cache.put(fullUrl, res);
-                        cachedCount++;
-                    }
+                const res = await fetch(fullUrl, { cache: 'no-cache' });
+                if (res && res.status === 200) {
+                    await cache.put(fullUrl, res);
+                    cachedCount++;
                 }
             } catch (err) {
                 console.warn('[SW] Falha ao cachear asset de sala:', fullUrl, err.message);
             }
 
-            // Envia feedback de progresso a cada 10 arquivos ou ao concluir
-            if (client && ((i + 1) % 10 === 0 || i + 1 === total)) {
-                client.postMessage({
+            // Envia feedback de progresso a cada 5 arquivos ou ao concluir
+            if ((i + 1) % 5 === 0 || i + 1 === pendingUrls.length) {
+                await notifyClients({
                     type: 'CACHE_PROGRESS',
                     current: i + 1,
-                    total: total,
-                    cached: cachedCount,
-                    skipped: skippedCount
+                    total: pendingUrls.length,
+                    cached: cachedCount
                 });
             }
         }
 
-        console.log(`[SW] Sincronização concluída: ${cachedCount} novos baixados, ${skippedCount} já no cache. Total verificado: ${total}`);
+        console.log(`[SW] Sincronização concluída: ${cachedCount} novos baixados de ${pendingUrls.length} pendentes.`);
+        await notifyClients({
+            type: 'CACHE_COMPLETE',
+            cached: cachedCount,
+            total: pendingUrls.length
+        });
     } finally {
         isDynamicCaching = false;
     }

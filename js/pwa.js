@@ -7,7 +7,7 @@
  * para evitar problemas de cache e garantir carregamento direto e inspeção (Ctrl+Alt+i).
  */
 
-const isGitHubPages = location.hostname.endsWith('github.io');
+const isGitHubPages = location.hostname.endsWith('github.io') || location.search.includes('pwa=1');
 
 if ('serviceWorker' in navigator) {
     if (isGitHubPages) {
@@ -94,9 +94,85 @@ function initTemplateAssetDiscovery(reg) {
         }
 
         navigator.serviceWorker.addEventListener('message', (event) => {
-            if (event.data && event.data.type === 'CACHE_PROGRESS') {
-                console.log(`[PWA Precache] Progresso: ${event.data.current}/${event.data.total} assets verificados (${event.data.cached} novos baixados).`);
+            if (!event.data) return;
+
+            if (event.data.type === 'CACHE_START') {
+                console.log(`[PWA] Nova versão / assets detectados (${event.data.totalToDownload} pendentes). Baixando...`);
+                updateCacheHUD('Assets das salas em carregamento...');
+            } else if (event.data.type === 'CACHE_PROGRESS') {
+                console.log(`[PWA Precache] Progresso: ${event.data.current}/${event.data.total} assets baixados.`);
+            } else if (event.data.type === 'CACHE_COMPLETE') {
+                console.log('[PWA Precache] Sincronização concluída com sucesso.');
+                updateCacheHUD('Assets carregados!', true);
             }
         });
     }, 1500);
 }
+
+/**
+ * =========================================================================
+ * MENSAGEM HUD TRANSLÚCIDA EM VR (Acompanha a cabeça do usuário)
+ * =========================================================================
+ * Exibe uma notificação translúcida na câmera do usuário informando o status
+ * do carregamento em segundo plano e a remove após 3 segundos da conclusão.
+ */
+let hudEntity = null;
+let hudTimeout = null;
+
+function updateCacheHUD(text, isComplete = false) {
+    const head = document.getElementById('head') || document.querySelector('a-camera');
+    if (!head) {
+        setTimeout(() => updateCacheHUD(text, isComplete), 200);
+        return;
+    }
+
+    if (!hudEntity) {
+        hudEntity = document.createElement('a-entity');
+        hudEntity.setAttribute('id', 'hud-cache-notification');
+        // Fixado na câmera: 1.1m à frente, -0.22m em Y (campo visual confortável, sem bloquear a visão direta)
+        hudEntity.setAttribute('position', '0 -0.22 -1.1');
+
+        // Fundo sutil translúcido para garantir contraste e legibilidade em qualquer fundo
+        const bg = document.createElement('a-plane');
+        bg.setAttribute('id', 'hud-cache-bg');
+        bg.setAttribute('width', '0.78');
+        bg.setAttribute('height', '0.12');
+        bg.setAttribute('material', 'color: #0b1528; opacity: 0.55; transparent: true');
+        bg.setAttribute('position', '0 0 -0.005');
+        hudEntity.appendChild(bg);
+
+        // Texto translúcido via Troika-text
+        const txt = document.createElement('a-troika-text');
+        txt.setAttribute('id', 'hud-cache-text');
+        txt.setAttribute('value', text);
+        txt.setAttribute('align', 'center');
+        txt.setAttribute('anchor', 'center');
+        txt.setAttribute('baseline', 'center');
+        txt.setAttribute('font-size', '0.038');
+        txt.setAttribute('color', '#00d2ff');
+        txt.setAttribute('fill-opacity', '0.85');
+        hudEntity.appendChild(txt);
+
+        head.appendChild(hudEntity);
+    } else {
+        const txt = hudEntity.querySelector('#hud-cache-text');
+        if (txt) {
+            txt.setAttribute('value', text);
+            if (isComplete) {
+                txt.setAttribute('color', '#50fa7b');
+                txt.setAttribute('fill-opacity', '0.9');
+            }
+        }
+    }
+
+    if (isComplete) {
+        if (hudTimeout) clearTimeout(hudTimeout);
+        hudTimeout = setTimeout(() => {
+            if (hudEntity && hudEntity.parentNode) {
+                hudEntity.parentNode.removeChild(hudEntity);
+                hudEntity = null;
+            }
+        }, 3000);
+    }
+}
+
