@@ -263,7 +263,8 @@ Modo padrão do repositório para distribuição final e uso autônomo sem fios 
 
 ## 4. Licença
 
-* **Código-Fonte:** Licenciado sob a [Licença MIT](LICENSE) (HTML, JavaScript, CSS, shaders e infraestrutura).
+* **Código-Fonte do Projeto:** Licenciado sob a [Licença MIT](LICENSE) (HTML, JavaScript da aplicação, CSS, shaders e infraestrutura).
+* **Bibliotecas de Terceiros (`libs/`):** As bibliotecas A-Frame, A-Frame Extras, Troika Text, A-Frame Environment Component e Meshopt Decoder são de autoria de seus respectivos criadores e distribuídas sob suas próprias licenças de código aberto (predominantemente Licença MIT).
 * **Modelos 3D Autorais:** O modelo 3D do Telescópio de Herschel ([`assets/Telescopio_Herschel`](assets/Telescopio_Herschel/LICENSE.md)) e da Luneta de Galileu ([`assets/Luneta_Galileu`](assets/Luneta_Galileu/LICENSE.md)), desenvolvidos por João Teles de Carvalho Neto, são distribuídos sob a licença [Creative Commons Atribuição-CompartilhaIgual 4.0 Internacional (CC BY-SA 4.0)](https://creativecommons.org/licenses/by-sa/4.0/).
 * **Assets Multimídia de Terceiros:** Imagens, sons e modelos da NASA, ESA e acervos de museus seguem seus respectivos termos de Domínio Público ou Creative Commons detalhados na seção [Créditos e Atribuições](#créditos-e-atribuições-detalhadas-por-sala).
 
