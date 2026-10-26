@@ -1,0 +1,47 @@
+MIT License
+
+Copyright (c) 2026 João Teles de Carvalho Neto / ObseRVe Group - UFSCar
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+================================================================================
+EXCEPTIONS AND MULTIMEDIA ASSET LICENSING:
+================================================================================
+
+The MIT license above applies to the application source code (JavaScript, HTML,
+CSS styles, shaders, server scripts, and project configuration).
+
+The 3D models, textures, illustrations, historical images, and audio tracks
+located under the `assets/` directory are independent creative and historical
+works distributed under their respective open licenses (Creative Commons and
+Public Domain), as detailed in the README.md file and in specific asset folders:
+
+* The 3D model of William Herschel's 7-foot Telescope (`assets/Telescopio_Herschel/herschel7feet_LR.glb`
+  and associated `.blend` source files) was created by João Teles de Carvalho Neto (2026)
+  and is licensed under Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0):
+  https://creativecommons.org/licenses/by-sa/4.0/
+
+* The 3D model of Galileo Galilei's Telescope (`assets/Luneta_Galileu/galileo_telescope_LR.glb`
+  and associated source files) was created by João Teles de Carvalho Neto (2026)
+  and is licensed under Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0):
+  https://creativecommons.org/licenses/by-sa/4.0/
+
+* Third-party assets (from NASA, ESA, museums, and historical archives) remain under
+  their respective original terms (Public Domain or Creative Commons) as documented
+  in the "Credits and Attributions" section of README.md.

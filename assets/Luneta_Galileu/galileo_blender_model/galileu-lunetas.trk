@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object class="org.opensourcephysics.cabrillo.tracker.TrackerPanel">
+    <property name="semantic_version" type="string">6.2.0</property>
+    <property name="width" type="double">1400.0</property>
+    <property name="height" type="double">2147.0</property>
+    <property name="magnification" type="double">0.8908987181403393</property>
+    <property name="center_x" type="int">827</property>
+    <property name="center_y" type="int">421</property>
+    <property name="videoclip" type="object">
+    <object class="org.opensourcephysics.media.core.VideoClip">
+        <property name="video" type="object">
+        <object class="org.opensourcephysics.media.core.ImageVideo">
+            <property name="paths" type="array" class="[Ljava.lang.String;">
+                <property name="[0]" type="string">galileu-lunetas.jpg</property>
+            </property>
+            <property name="path" type="string">galileu-lunetas.jpg</property>
+            <property name="delta_t" type="double">100.0</property>
+        </object>
+        </property>
+        <property name="video_framecount" type="int">10</property>
+        <property name="startframe" type="int">0</property>
+        <property name="stepsize" type="int">1</property>
+        <property name="stepcount" type="int">10</property>
+        <property name="starttime" type="double">0.0</property>
+        <property name="readout" type="string">frame</property>
+        <property name="playallsteps" type="boolean">true</property>
+    </object>
+    </property>
+    <property name="clipcontrol" type="object">
+    <object class="org.opensourcephysics.media.core.StepperClipControl">
+        <property name="rate" type="double">1.0</property>
+        <property name="delta_t" type="double">100.0</property>
+        <property name="frame" type="int">0</property>
+    </object>
+    </property>
+    <property name="coords" type="object">
+    <object class="org.opensourcephysics.media.core.ImageCoordSystem">
+        <property name="fixedorigin" type="boolean">true</property>
+        <property name="fixedangle" type="boolean">true</property>
+        <property name="fixedscale" type="boolean">true</property>
+        <property name="locked" type="boolean">false</property>
+        <property name="framedata" type="array" class="[Lorg.opensourcephysics.media.core.ImageCoordSystem$FrameData;">
+            <property name="[0]" type="object">
+            <object class="org.opensourcephysics.media.core.ImageCoordSystem$FrameData">
+                <property name="xorigin" type="double">700.0</property>
+                <property name="yorigin" type="double">1073.5</property>
+                <property name="angle" type="double">0.0</property>
+                <property name="xscale" type="double">1210.6603916595755</property>
+                <property name="yscale" type="double">1210.6603916595755</property>
+            </object>
+            </property>
+        </property>
+    </object>
+    </property>
+    <property name="length_unit" type="string">m</property>
+    <property name="mass_unit" type="string">kg</property>
+    <property name="units_visible" type="boolean">true</property>
+    <property name="tracks" type="collection" class="java.util.ArrayList">
+        <property name="item" type="object">
+        <object class="org.opensourcephysics.cabrillo.tracker.CoordAxes">
+            <property name="name" type="string">eixos</property>
+            <property name="color" type="object">
+            <object class="java.awt.Color">
+                <property name="red" type="int">200</property>
+                <property name="green" type="int">0</property>
+                <property name="blue" type="int">200</property>
+                <property name="alpha" type="int">255</property>
+            </object>
+            </property>
+            <property name="footprint" type="string">Footprint.BoldSimpleAxes</property>
+            <property name="visible" type="boolean">false</property>
+            <property name="trail" type="boolean">false</property>
+        </object>
+        </property>
+        <property name="item" type="object">
+        <object class="org.opensourcephysics.cabrillo.tracker.TapeMeasure">
+            <property name="name" type="string">Bastão de Calibração A</property>
+            <property name="color" type="object">
+            <object class="java.awt.Color">
+                <property name="red" type="int">0</property>
+                <property name="green" type="int">0</property>
+                <property name="blue" type="int">255</property>
+                <property name="alpha" type="int">255</property>
+            </object>
+            </property>
+            <property name="footprint" type="string">Footprint.BoldDoubleTarget</property>
+            <property name="visible" type="boolean">true</property>
+            <property name="trail" type="boolean">false</property>
+            <property name="fixedtape" type="boolean">true</property>
+            <property name="fixedlength" type="boolean">true</property>
+            <property name="readonly" type="boolean">false</property>
+            <property name="stickmode" type="boolean">true</property>
+            <property name="framedata" type="array" class="[Lorg.opensourcephysics.cabrillo.tracker.TapeMeasure$FrameData;">
+                <property name="[0]" type="object">
+                <object class="org.opensourcephysics.cabrillo.tracker.TapeMeasure$FrameData">
+                    <property name="x1" type="double">391.8203688853237</property>
+                    <property name="y1" type="double">681.3989574979943</property>
+                    <property name="x2" type="double">1161.4403175503257</property>
+                    <property name="y2" type="double">1498.2235611000851</property>
+                </object>
+                </property>
+            </property>
+            <property name="worldlengths" type="array" class="[Ljava.lang.Double;">
+                <property name="[0]" type="double">0.927</property>
+            </property>
+        </object>
+        </property>
+        <property name="item" type="object">
+        <object class="org.opensourcephysics.cabrillo.tracker.TapeMeasure">
+            <property name="name" type="string">Diametro_ocular</property>
+            <property name="color" type="object">
+            <object class="java.awt.Color">
+                <property name="red" type="int">204</property>
+                <property name="green" type="int">0</property>
+                <property name="blue" type="int">0</property>
+                <property name="alpha" type="int">255</property>
+            </object>
+            </property>
+            <property name="footprint" type="string">Footprint.DoubleArrow</property>
+            <property name="visible" type="boolean">true</property>
+            <property name="trail" type="boolean">false</property>
+            <property name="fixedtape" type="boolean">true</property>
+            <property name="fixedlength" type="boolean">true</property>
+            <property name="readonly" type="boolean">true</property>
+            <property name="stickmode" type="boolean">false</property>
+            <property name="framedata" type="array" class="[Lorg.opensourcephysics.cabrillo.tracker.TapeMeasure$FrameData;">
+                <property name="[0]" type="object">
+                <object class="org.opensourcephysics.cabrillo.tracker.TapeMeasure$FrameData">
+                    <property name="x1" type="double">387.95349769492884</property>
+                    <property name="y1" type="double">727.4987973541794</property>
+                    <property name="x2" type="double">437.90338745239524</property>
+                    <property name="y2" type="double">677.268290238525</property>
+                </object>
+                </property>
+            </property>
+            <property name="worldlengths" type="array" class="[Ljava.lang.Double;">
+                <property name="[0]" type="double">200.00000000000006</property>
+            </property>
+            <property name="rulersize" type="double">30.0</property>
+            <property name="rulerspacing" type="double">8.0</property>
+        </object>
+        </property>
+        <property name="item" type="object">
+        <object class="org.opensourcephysics.cabrillo.tracker.TapeMeasure">
+            <property name="name" type="string">Comprimento_ocular</property>
+            <property name="color" type="object">
+            <object class="java.awt.Color">
+                <property name="red" type="int">204</property>
+                <property name="green" type="int">0</property>
+                <property name="blue" type="int">0</property>
+                <property name="alpha" type="int">255</property>
+            </object>
+            </property>
+            <property name="footprint" type="string">Footprint.DoubleArrow</property>
+            <property name="visible" type="boolean">true</property>
+            <property name="trail" type="boolean">false</property>
+            <property name="fixedtape" type="boolean">true</property>
+            <property name="fixedlength" type="boolean">true</property>
+            <property name="readonly" type="boolean">true</property>
+            <property name="stickmode" type="boolean">false</property>
+            <property name="framedata" type="array" class="[Lorg.opensourcephysics.cabrillo.tracker.TapeMeasure$FrameData;">
+                <property name="[0]" type="object">
+                <object class="org.opensourcephysics.cabrillo.tracker.TapeMeasure$FrameData">
+                    <property name="x1" type="double">395.375</property>
+                    <property name="y1" type="double">677.125</property>
+                    <property name="x2" type="double">433.27320104229307</property>
+                    <property name="y2" type="double">717.2562637803169</property>
+                </object>
+                </property>
+            </property>
+            <property name="worldlengths" type="array" class="[Ljava.lang.Double;">
+                <property name="[0]" type="double">199.99999999999994</property>
+            </property>
+            <property name="rulersize" type="double">30.0</property>
+            <property name="rulerspacing" type="double">8.0</property>
+        </object>
+        </property>
+        <property name="item" type="object">
+        <object class="org.opensourcephysics.cabrillo.tracker.TapeMeasure">
+            <property name="name" type="string">Diametro_objetiva</property>
+            <property name="color" type="object">
+            <object class="java.awt.Color">
+                <property name="red" type="int">204</property>
+                <property name="green" type="int">0</property>
+                <property name="blue" type="int">0</property>
+                <property name="alpha" type="int">255</property>
+            </object>
+            </property>
+            <property name="footprint" type="string">Footprint.DoubleArrow</property>
+            <property name="visible" type="boolean">true</property>
+            <property name="trail" type="boolean">false</property>
+            <property name="fixedtape" type="boolean">true</property>
+            <property name="fixedlength" type="boolean">true</property>
+            <property name="readonly" type="boolean">true</property>
+            <property name="stickmode" type="boolean">false</property>
+            <property name="framedata" type="array" class="[Lorg.opensourcephysics.cabrillo.tracker.TapeMeasure$FrameData;">
+                <property name="[0]" type="object">
+                <object class="org.opensourcephysics.cabrillo.tracker.TapeMeasure$FrameData">
+                    <property name="x1" type="double">1116.5863339948967</property>
+                    <property name="y1" type="double">1487.5062375956904</property>
+                    <property name="x2" type="double">1156.2065917413815</property>
+                    <property name="y2" type="double">1450.858252304584</property>
+                </object>
+                </property>
+            </property>
+            <property name="worldlengths" type="array" class="[Ljava.lang.Double;">
+                <property name="[0]" type="double">200.0</property>
+            </property>
+            <property name="rulersize" type="double">30.0</property>
+            <property name="rulerspacing" type="double">8.0</property>
+        </object>
+        </property>
+        <property name="item" type="object">
+        <object class="org.opensourcephysics.cabrillo.tracker.TapeMeasure">
+            <property name="name" type="string">fita A</property>
+            <property name="color" type="object">
+            <object class="java.awt.Color">
+                <property name="red" type="int">204</property>
+                <property name="green" type="int">0</property>
+                <property name="blue" type="int">0</property>
+                <property name="alpha" type="int">255</property>
+            </object>
+            </property>
+            <property name="footprint" type="string">Footprint.DoubleArrow</property>
+            <property name="visible" type="boolean">true</property>
+            <property name="trail" type="boolean">false</property>
+            <property name="fixedtape" type="boolean">true</property>
+            <property name="fixedlength" type="boolean">true</property>
+            <property name="readonly" type="boolean">true</property>
+            <property name="stickmode" type="boolean">false</property>
+            <property name="framedata" type="array" class="[Lorg.opensourcephysics.cabrillo.tracker.TapeMeasure$FrameData;">
+                <property name="[0]" type="object">
+                <object class="org.opensourcephysics.cabrillo.tracker.TapeMeasure$FrameData">
+                    <property name="x1" type="double">753.4576067348166</property>
+                    <property name="y1" type="double">1089.916115453999</property>
+                    <property name="x2" type="double">782.361194628182</property>
+                    <property name="y2" type="double">1061.8543796351976</property>
+                </object>
+                </property>
+            </property>
+            <property name="worldlengths" type="array" class="[Ljava.lang.Double;">
+                <property name="[0]" type="double">200.0</property>
+            </property>
+            <property name="rulersize" type="double">30.0</property>
+            <property name="rulerspacing" type="double">8.0</property>
+        </object>
+        </property>
+        <property name="item" type="object">
+        <object class="org.opensourcephysics.cabrillo.tracker.TapeMeasure">
+            <property name="name" type="string">fita B</property>
+            <property name="color" type="object">
+            <object class="java.awt.Color">
+                <property name="red" type="int">204</property>
+                <property name="green" type="int">0</property>
+                <property name="blue" type="int">0</property>
+                <property name="alpha" type="int">255</property>
+            </object>
+            </property>
+            <property name="footprint" type="string">Footprint.DoubleArrow</property>
+            <property name="visible" type="boolean">true</property>
+            <property name="trail" type="boolean">false</property>
+            <property name="fixedtape" type="boolean">true</property>
+            <property name="fixedlength" type="boolean">true</property>
+            <property name="readonly" type="boolean">true</property>
+            <property name="stickmode" type="boolean">false</property>
+            <property name="framedata" type="array" class="[Lorg.opensourcephysics.cabrillo.tracker.TapeMeasure$FrameData;">
+                <property name="[0]" type="object">
+                <object class="org.opensourcephysics.cabrillo.tracker.TapeMeasure$FrameData">
+                    <property name="x1" type="double">448.63468309859155</property>
+                    <property name="y1" type="double">711.8867370892019</property>
+                    <property name="x2" type="double">1132.8019366197184</property>
+                    <property name="y2" type="double">1436.3732394366198</property>
+                </object>
+                </property>
+            </property>
+            <property name="worldlengths" type="array" class="[Ljava.lang.Double;">
+                <property name="[0]" type="double">200.0</property>
+            </property>
+            <property name="rulersize" type="double">30.0</property>
+            <property name="rulerspacing" type="double">8.0</property>
+        </object>
+        </property>
+    </property>
+    <property name="selectedtrack" type="string">fita B</property>
+    <property name="dividers" type="array" class="[D">
+        <property name="array" type="string">{0.9133514986376022,0.5542168674698795,1.0,0.23596730245231606}</property>
+    </property>
+    <property name="selected_view_types" type="array" class="[I">
+        <property name="array" type="string">{0,1,2,3}</property>
+    </property>
+    <property name="selected_track_views" type="string">fita B,null;null,fita B;null,null;null,null</property>
+    <property name="toolbar" type="object">
+    <object class="org.opensourcephysics.cabrillo.tracker.TToolBar">
+        <property name="trace" type="boolean">false</property>
+        <property name="position" type="boolean">true</property>
+        <property name="velocity" type="boolean">false</property>
+        <property name="acceleration" type="boolean">false</property>
+        <property name="labels" type="boolean">true</property>
+        <property name="multiply_by_mass" type="boolean">false</property>
+        <property name="trail_length" type="int">15</property>
+        <property name="stretch" type="int">1</property>
+        <property name="stretch_acceleration" type="int">1</property>
+    </object>
+    </property>
+</object>

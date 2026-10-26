@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Exposição Virtual de Instrumentos Astronômicos</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" href="assets/icon-192.png">
+    <meta name="theme-color" content="#1a1f2c">
+
+    <!-- PWA e sincronização de assets com Service Worker -->
+    <script src="js/pwa.js"></script>
+
+    <script src="libs/aframe.min.js"></script>
+    <script src="libs/aframe-extras.min.js"></script>
+    <script src="libs/aframe-environment-component.min.js"></script>
+    <script src="libs/aframe-troika-text.min.js"></script>
+
+    <!-- Parâmetros globais de configuração e dimensionamento VR -->
+    <script src="js/config.js"></script>
+
+    <!-- Desbloqueio do Web Audio Context em WebXR -->
+    <script src="js/audio-unlock.js"></script>
+
+    <!-- =========================================================================
+       COMPONENTES A-FRAME MODULARES
+       ========================================================================= -->
+    <script src="components/room-manager.js"></script>
+    <script src="components/room-floor.js"></script>
+    <script src="components/totem-teleport.js"></script>
+    <script src="components/pedestal.js"></script>
+    <script src="components/exhibit-panel.js"></script>
+    <script src="components/exhibit-panel-new.js"></script>
+    <script src="components/wall-panel.js"></script>
+    <script src="components/panel-audio.js"></script>
+    <script src="components/fullscale-model.js"></script>
+    <script src="components/asset-model.js"></script>
+    <script src="components/auto-height.js"></script>
+</head>
+
+<body>
+    <!-- =========================================================================
+       SALA PRINCIPAL E CONFIGURAÇÃO DA CENA VR
+       WebXR com local-floor mantém o centro real do guardião em (0,0,0).
+       ========================================================================= -->
+    <a-scene gltf-model="meshoptDecoderPath: libs/meshopt_decoder.js" inspector="url: libs/aframe-inspector.min.js">
+
+        <!-- Câmera do HMD -->
+        <a-camera id="head"></a-camera>
+
+        <!-- Rastreamento nativo das mãos sem joysticks -->
+        <a-entity id="leftHand" hand-tracking-grab-controls="hand: left"></a-entity>
+        <a-entity id="rightHand" hand-tracking-grab-controls="hand: right"></a-entity>
+
+        <!-- =========================================================================
+         CONTAINER ANCORADO DA SALA ATIVA
+         ========================================================================= -->
+        <a-entity id="room-container" position="0 0 0" room-manager="currentRoom: hall"></a-entity>
+
+    </a-scene>
+
+    <!-- =========================================================================
+       TEMPLATES DAS SALAS
+       ========================================================================= -->
+
+    <!-- =========================================================================
+       TEMPLATE: HALL DE ENTRADA
+       ========================================================================= -->
+    <template id="template-hall">
+        <a-entity id="hall-content" environment="preset: arches; shadow: true; fog: 0.15">
+
+            <!-- Painel de Boas-Vindas Central (Posicionamento dinâmico via exhibit-panel) -->
+            <a-entity
+                exhibit-panel="angle: 0; distance: 2.0; width: 2.0; height: 1.35; hasBorder: true; borderColor: #00d2ff"
+                panel-audio="src: Audios/sala_hall.m4a; autoplay: true">
+                <a-troika-text value="EXPOSIÇÃO VIRTUAL DE INSTRUMENTOS ASTRONÔMICOS" align="center" anchor="center"
+                    baseline="top" font-size="0.055" max-width="1.8" color="#00d2ff" position="0 0.52 0.02">
+                </a-troika-text>
+                <a-troika-text
+                    value="Por milênios, o ser humano observou o céu apenas com os próprios olhos. Em 1609, um instrumento óptico mudou isso para sempre. Esta exposição percorre a história dos instrumentos científicos que estenderam nossa compreensão do cosmo, desde a luneta de Galileu até os telescópios que hoje observam a fronteira do universo observável. Toque na esfera do totem de cada sala para iniciar.\n\nNo centro de cada sala há um modelo de cada instrumento que você pode manipular agarrando-o com as próprias mãos.\n\nPara ouvir o texto de cada painel, toque-o com as mãos."
+                    align="center" anchor="center" baseline="top" font-size="0.05" max-width="1.8" line-height="1.3"
+                    color="#ffffff" position="0 0.40 0.02">
+                </a-troika-text>
+
+                <!-- Logos institucionais centralizados lado a lado -->
+                <a-entity id="panel-welcome-logos" position="0 -0.49 0.02">
+                    <a-image id="logo-observe" src="assets/observe.png" width="0.20" height="0.20" position="-0.187 0 0"
+                        transparent="true"></a-image>
+                    <a-image id="logo-ufscar" src="assets/UFSCAR.png" width="0.20" height="0.20" position="0.15 0 0"
+                        transparent="true"></a-image>
+                </a-entity>
+            </a-entity>
+
+            <!-- 6 TÓTENS CIRCULARES DE TELETRANSPORTE (Posicionamento radial dinâmico) -->
+            <a-entity totem-teleport="target: sala1; label: 1609\nLuneta de\nGalileu; angle: 60"></a-entity>
+            <a-entity
+                totem-teleport="target: sala2; label: 1781\nTelescópio\nde 7 pés\nW. Herschel; angle: 115"></a-entity>
+            <a-entity totem-teleport="target: sala3; label: 1977\nSondas\nVoyager; angle: 160"></a-entity>
+            <a-entity totem-teleport="target: sala4; label: 1990\nTelescópio\nEspacial\nHubble; angle: -160"></a-entity>
+            <a-entity totem-teleport="target: sala5; label: 1997\nRover\nMarciano\nCuriosity; angle: -115"></a-entity>
+            <a-entity
+                totem-teleport="target: sala6; label: 2021\nTelescópio\nEspacial\nJames Webb; angle: -60"></a-entity>
+        </a-entity>
+    </template>
+
+    <!-- =========================================================================
+       TEMPLATE: SALA 1 - A LUNETA DE GALILEU
+       ========================================================================= -->
+    <template id="template-sala1">
+        <a-entity id="sala1-content">
+
+            <!-- Música de fundo da sala em loop contínuo -->
+            <a-entity
+                sound="src: assets/Music/Allegri_-_Miserere_Mei,_Deus_-_Ensamble_Escénico_Vocal.mp3; autoplay: true; loop: true; positional: false; volume: 0.5"></a-entity>
+
+            <a-light type="ambient" color="white" intensity="0.9"></a-light>
+
+            <!-- Muro externo -->
+            <a-cylinder position="0 1 0" radius="5" height="2" open-ended="true" side="back"
+                material="src: assets/Textures/plaster_stone_wall_02_diff_4k.webp; repeat: 12 1">
+            </a-cylinder>
+
+            <!-- Piso -->
+            <a-cylinder radius="5.1" height="0.001"
+                material="src: assets/Textures/slab_tiles_diff_2k.webp; repeat: 20 20">
+            </a-cylinder>
+
+            <!-- Skybox -->
+            <a-sky src="assets/Sky/kloppenheim_06_puresky.webp"></a-sky>
+
+            <!-- Tóten de Retorno ao Hall -->
+            <a-entity totem-teleport="target: hall; label: Retornar\nao Hall; angle: 315; radius: 1.5"></a-entity>
+
+            <!-- Modelo Central Manipulável -->
+            <a-entity pedestal="color: #202433">
+                <a-entity id="galileo-telescope" grabbable asset-model="src: Luneta_Galileu/galileo_telescope_LR.glb"
+                    position="0 0.5 0" rotation="0 0 30" scale="1 1 1">
+                </a-entity>
+            </a-entity>
+
+            <!-- PAINÉIS EXPOSITIVOS -->
+
+            <!-- Painel 1: A Luneta de Galileu Galilei -->
+            <a-entity wall-panel="angle: 0; radius: 1.5; width:0.8; textWidth: 0.5; titleHeight: 1.55; titleWidth: 0.6;"
+                panel-audio="src: Audios/sala1painel1.m4a"
+                material="src: assets/Textures/plastered_wall_diff_2k.webp; repeat: 1 3">
+                <a-entity exhibit-panel-new="src: assets/Luneta_Galileu/luneta-inv2428.webp; width: 0.7;"></a-entity>
+                <a-troika-text
+                    value="Fotografia da luneta original de Galileu Galilei (Inv. 2428), pertencente ao acervo do Museo Galileo em Florença"></a-troika-text>
+                <a-troika-text
+                    value="Recorte da fotografia original de autoria de Zdenek Kratochvil, 2022"></a-troika-text>
+                <a-troika-text
+                    value='\t\t Exemplar histórico construído pelo próprio Galileu Galilei, este instrumento refrator é um dos raros telescópios originais preservados até os dias de hoje. Seu corpo é composto por ripas de madeira unidas e revestidas em couro com detalhes decorativos em ouro e seções ajustáveis para controle do foco. O sistema óptico combina uma lente objetiva plano-convexa e uma ocular divergente, fornecendo uma ampliação de aproximadamente 21 vezes. Embora a ocular original tenha se perdido e sido substituída no século XIX, o instrumento simboliza o nascimento da astronomia moderna e inspirou a própria criação da palavra "telescópio" (do grego "ver ao longe"), proposta em 1611 pela Accademia dei Lincei."'>
+                </a-troika-text>
+            </a-entity>
+
+            <!-- Painel 2: Retrato de Galileu Galilei -->
+            <a-entity
+                wall-panel="angle: 90; radius: 1.7; width:1.4; height: 2.7; textWidth: 0.5; titleHeight: 1.20; titleWidth: 0.6; mediaHeight: 1.90"
+                panel-audio="src: Audios/sala1painel2.m4a"
+                material="src: assets/Textures/plastered_wall_diff_2k.webp; repeat: 1 3">
+                <a-entity
+                    exhibit-panel-new="src: assets/Luneta_Galileu/Portrait_of_Galileo_Galilei.webp; width: 0.686; frameSrc: assets/Molduras/fancy_picture_frame_02_4k.gltf/fancy_picture_frame_02_4k.gltf; frameHeightRatio: 1.58; frameWidthRatio: 1.7;"></a-entity>
+                <a-troika-text
+                    value='Retrato de Galileu Galilei, pertencente ao "National Maritime Museum", Greenwich, Londres'></a-troika-text>
+                <a-troika-text value="Óleo sobre tela, Justus Sustermans, circa 1640"></a-troika-text>
+                <a-troika-text
+                    value='\t\t Galileu Galilei (1564–1642) não inventou a luneta, mas foi o primeiro a usá-la como instrumento astronômico, em 1609. Professor em Pádua, aperfeiçoou o instrumento holandês original até alcançar cerca de 20x de aumento, o suficiente para revolucionar a compreensão humana do cosmos.'>
+                </a-troika-text>
+            </a-entity>
+
+            <!-- Painel 3.1: Texto - Galileu Diante do Santo Ofício -->
+            <a-entity
+                wall-panel="angle: 180; radius: 1.5; height: 1.0; width:0.7; textWidth: 0.5; titleHeight: 0.97; titleWidth: 0.6; tiltHeight: 0.7; tiltAngle: 45"
+                panel-audio="src: Audios/sala1painel3.m4a"
+                material="src: assets/Textures/plastered_wall_diff_2k.webp; repeat: 1 2">
+                <a-troika-text value="Galieu Diante do Santo Ofício"></a-troika-text>
+                <a-troika-text
+                    value="Óleo sobre tela, Joseph-Nicolas Robert-Fleury, 1847.\n Tamanho: 3,08 x 1,96 m"></a-troika-text>
+                <a-troika-text
+                    value='\t\t As observações de Galileu reforçaram o modelo heliocêntrico de Copérnico. Em 1633, ele foi julgado pela Inquisição e forçado a se retratar publicamente, permanecendo sob prisão domiciliar até sua morte. Apenas em 1992 a Igreja Católica reconheceu formalmente o erro do julgamento.'>
+                </a-troika-text>
+            </a-entity>
+            <!-- Painel 3.2: Pintura - Galileu Diante do Santo Ofício -->
+            <a-entity
+                wall-panel="angle: 180; radius: 2.0; height: 3.0; width: 4.1; depth: 0.1; textWidth: 0.5; titleHeight: 0.9; titleWidth: 0.6; mediaHeight: 1.6"
+                material="src: assets/Textures/medieval_red_brick_diff_2k.webp; repeat: 2 1.5">
+                <a-entity
+                    exhibit-panel-new="src: assets/Luneta_Galileu/Galileo_before_the_Holy_Office.webp; width: 3.08; frameSrc: assets/Molduras/fancy_picture_frame_01_4k.gltf/fancy_picture_frame_01_4k.gltf"></a-entity>
+            </a-entity>
+
+            <!-- Painel 4: Páginas de Sidereus Nuncius -->
+            <a-entity
+                wall-panel="angle: 270; radius: 1.5; width:0.8; height: 2.15; textWidth: 0.5; titleHeight: 1.35; titleWidth: 0.6;"
+                panel-audio="src: Audios/sala1painel4.m4a"
+                material="src: assets/Textures/plastered_wall_diff_2k.webp; repeat: 1 3">
+                <a-entity
+                    exhibit-panel-new="src: assets/Luneta_Galileu/sidereusnuncius_p18_49.webp; width: 0.7;"></a-entity>
+                <a-troika-text value="Páginas de Sidereus Nuncius"></a-troika-text>
+                <a-troika-text
+                    value="Páginas 18 e 49 da obra Sidereus Nuncius (Mensageiro das Estrelas), por Galileu Galilei, primeiramente publicado em Veneza, 1610"></a-troika-text>
+                <a-troika-text
+                    value='\t\tÀ esquerda: Em seus primeiros registros, Galileu desenhou a Lua não como uma esfera perfeita, mas coberta de crateras, montanhas e vales, contrariando a ideia aristotélica de corpos celestes perfeitos e imutáveis. Esses desenhos, publicados na obra "Sidereus Nuncius", foram algumas das primeiras representações científicas de outro mundo.\n\t\tÀ direita: Em janeiro de 1610, Galileu observou quatro pontos de luz ao redor de Júpiter que mudavam de posição noite após noite. Deduziu que eram luas orbitando outro planeta, prova visual de que nem tudo gira em torno da Terra. Hoje conhecidas como luas galileanas: Io, Europa, Ganimedes e Calisto.'>
+                </a-troika-text>
+            </a-entity>
+
+        </a-entity>
+    </template>
+
+    <!-- =========================================================================
+       TEMPLATE: SALA 2 - O Telescópio de 7 Pés de William Herschel (1781)
+       ========================================================================= -->
+    <template id="template-sala2">
+        <a-entity id="sala2-content">
+
+            <!-- Música de fundo da sala em loop contínuo -->
+            <a-entity
+                sound="src: assets/Music/Carl_Philipp_Emanuel_Bach-_Flute_Concerto_Gmaj_-_3._Presto.mp3; autoplay: true; loop: true; positional: false; volume: 0.2"></a-entity>
+
+            <a-light type="ambient" color="white" intensity="1.5"></a-light>
+            <a-light type="directional" color="white" intensity="0.8" position="-1 2 1"></a-light>
+
+            <!-- Muro externo -->
+            <a-cylinder position="0 1 0" radius="5" height="2" open-ended="true" side="back"
+                material="src: assets/Textures/plaster_stone_wall_02_diff_4k.webp; repeat: 12 1">
+            </a-cylinder>
+
+            <!-- Piso -->
+            <a-cylinder radius="5.1" height="0.001"
+                material="src: assets/Textures/slab_tiles_diff_2k.webp; repeat: 20 20">
+            </a-cylinder>
+
+            <!-- Skybox -->
+            <a-sky src="assets/Sky/kloppenheim_06_puresky.webp"></a-sky>
+
+            <!-- Tóten de Retorno ao Hall -->
+            <a-entity totem-teleport="target: hall; label: Retornar\nao Hall; angle: 330; radius: 1.5"></a-entity>
+
+            <!-- Modelo Central Manipulável -->
+            <a-entity pedestal="color: #202433">
+                <a-entity position="0 0.28 0">
+                    <a-entity id="herschel-telescope-mini" grabbable
+                        asset-model="src: Telescopio_Herschel/herschel7feet_LR.glb" position="0 0 0"
+                        rotation="-45.55 10.485 -14.439" scale="0.3 0.3 0.3">
+                    </a-entity>
+                </a-entity>
+            </a-entity>
+
+            <!-- Modelo em Escala Real -->
+            <a-entity position="-0.256 0.859 -2.054"
+                animation="property: rotation; to: 0 360 0; loop: true; dur: 30000; easing: linear">
+                <a-entity id="herschel-telescope-fullscale" asset-model="src: Telescopio_Herschel/herschel7feet_LR.glb"
+                    rotation="-45.55 10.485 -14.439" position="0 0 -0.2" scale="1 1 1">
+                </a-entity>
+            </a-entity>
+
+            <!-- PAINÉIS EXPOSITIVOS -->
+
+            <!-- Painel 1: O telescópio de 7 pés de William Herschel -->
+            <a-entity
+                wall-panel="angle: 60; radius: 1.5; width: 0.8; height: 2.25; textWidth: 0.5; titleHeight: 1.28; titleWidth: 0.6; mediaHeight: 1.72"
+                panel-audio="src: Audios/sala2painel1.m4a"
+                material="src: assets/Textures/plastered_wall_diff_2k.webp; repeat: 1 3">
+                <a-entity
+                    exhibit-panel-new="src: assets/Telescopio_Herschel/Herschel_7ft_Telescope.webp; width: 0.7;"></a-entity>
+                <a-troika-text value="O Telescópio de 7 pés de William Herschel"></a-troika-text>
+                <a-troika-text
+                    value="Réplica de 1981 do telescópio com o qual William Herschel descobriu Urano. Instrumento no Museu de Astronomia Herschel, Bath, Inglaterra"></a-troika-text>
+                <a-troika-text
+                    value='\t\t Construído artesanalmente por William Herschel com o apoio de sua irmã Caroline, este telescópio refletor newtoniano de 7 pés (~2,1 m) de distância focal foi o instrumento responsável pela histórica descoberta do planeta Urano em 1781. Seu tubo em formato octogonal abriga um espelho primário de 6,2 polegadas (~16 cm, f/13,6), confeccionado em espéculo metálico e polido manualmente com precisão óptica sem precedentes para a época. O feixe luminoso é refletido para uma ocular lateral em montagem de latão, proporcionando aumento de cerca de 227 vezes. O conjunto é sustentado por um engenhoso cavalete altazimutal de madeira, com engrenagens, polias e parafusos movidos manualmente por manivelas para ajuste micrométrico nos eixos de altitude e azimute.'>
+                </a-troika-text>
+            </a-entity>
+
+            <!-- Painel 2: William e Caroline Herschel -->
+            <a-entity
+                wall-panel="angle: 120; radius: 1.5; width: 0.8; height: 2.35; textWidth: 0.5; titleHeight: 1.30; titleWidth: 0.6; mediaHeight: 1.76"
+                panel-audio="src: Audios/sala2painel2.m4a"
+                material="src: assets/Textures/plastered_wall_diff_2k.webp; repeat: 1 3">
+                <a-entity
+                    exhibit-panel-new="src: assets/Telescopio_Herschel/William_and_Caroline_Herschel_LR.webp; width: 0.55;"></a-entity>
+                <a-troika-text value="William e Caroline Herschel"></a-troika-text>
+                <a-troika-text
+                    value="William Herschel e Caroline Herschel. Litografia colorida por A. Diethe, c. 1896. Wellcome Collection, Londres."></a-troika-text>
+                <a-troika-text
+                    value='\t\t Originalmente músicos profissionais de origem alemã radicados na Inglaterra, William Herschel (1738–1822) e sua irmã Caroline Herschel (1750–1848) formaram uma parceria científica extremamente prolífica. Enquanto William fundia e polia espelhos ópticos insuperáveis para a época, Caroline registrava sistematicamente as coordenadas das observações, calculava órbitas e descobriu, ela própria, oito cometas -- tornando-se a primeira mulher formalmente assalariada como cientista pela Coroa Britânica.\n\t\t Esta litografia retrata o processo de fabricação do espelho de um telescópio por Herschel com a assistência de sua irmã. Além do auxílio na lubrificação retratado na cena, Caroline também desempenhava um papel vital durante as sessões de polimento manual. Em suas memórias ("Memoirs and Correspondence of Caroline Herschel"), ela relata que, para evitar que o metal do espelho esfriasse de forma desigual e estragasse a curvatura óptica, William precisava trabalhar por até 16 horas seguidas sem retirar as mãos do espelho. Por esse motivo, Caroline frequentemente o alimentava diretamente na boca com pedaços de comida e bebida ao longo do processo.'>
+                </a-troika-text>
+            </a-entity>
+
+            <!-- Painel 3: A Descoberta de Urano e Suas Luas -->
+            <a-entity
+                wall-panel="angle: 180; radius: 1.5; width: 0.8; height: 2.15; textWidth: 0.5; titleHeight: 1.40; titleWidth: 0.6; mediaHeight: 1.70"
+                panel-audio="src: Audios/sala2painel3.m4a"
+                material="src: assets/Textures/plastered_wall_diff_2k.webp; repeat: 1 3">
+                <a-entity
+                    exhibit-panel-new="src: assets/Telescopio_Herschel/Urano_Titania_Oberon.webp; width: 0.7;"></a-entity>
+                <a-troika-text value="A Descoberta de Urano e suas Luas"></a-troika-text>
+                <a-troika-text
+                    value="Esquerda: Simulação de Urano e as luas Titânia e Oberon em 11/01/1787 (Stellarium).\nDireita: Urano e suas 4 maiores luas (Hubble, NASA, ESA, STScI)."></a-troika-text>
+                <a-troika-text
+                    value='\t\t Observando o céu no quintal de sua residência, em 13 de março de 1781, com seu refletor de 6 polegadas, William Herschel notou na constelação de Gêmeos um astro incomum que não cintilava como estrela e apresentava um disco discernível. Inicialmente comunicado à Royal Society como cometa, cálculos orbitais confirmaram que se tratava de um novo planeta além de Saturno, tornando-se o primeiro mundo descoberto desde a Pré-História e duplicando o raio do Sistema Solar conhecido. Seis anos depois, em 11 de janeiro de 1787, William descobriu as duas maiores luas de Urano: Titânia e Oberon. A imagem à esquerda corresponde a uma simulação do céu no dia em que Herschel descobriu Urano. À direita temos uma imagem obtida com o Telescópio Espacial Hubble.'>
+                </a-troika-text>
+            </a-entity>
+
+            <!-- Painel 4: O Espelho de Espéculo Metálico -->
+            <a-entity
+                wall-panel="angle: 240; radius: 1.5; width: 0.8; height: 2.10; textWidth: 0.5; titleHeight: 1.42; titleWidth: 0.6; mediaHeight: 1.70; textGap: 0.04"
+                panel-audio="src: Audios/sala2painel4.m4a"
+                material="src: assets/Textures/plastered_wall_diff_2k.webp; repeat: 1 3">
+                <a-entity
+                    exhibit-panel-new="src: assets/Telescopio_Herschel/Primary_mirror_10ft.webp; width: 0.7;"></a-entity>
+                <a-troika-text value="O Espelho de Espéculo Metálico"></a-troika-text>
+                <a-troika-text
+                    value="Fotografia do espelho primário do telescópio refletor de 10 pés de Herschel, c. 1783\nMathematisch-Physikalischer Salon, Dresden"></a-troika-text>
+                <a-troika-text
+                    value='\t\t Antes do desenvolvimento da prateação sobre vidro no século XIX, os telescópios refletores dependiam de espelhos de "speculum" -- uma liga pesada e frágil de cobre e estanho propensa à oxidação atmosférica rápida. Manter o refletor funcional exigia sessões extenuantes de polimento manual com óxido de ferro. Herschel confeccionava múltiplos espelhos intercambiáveis para que um pudesse ser polido enquanto o outro estava em uso.'>
+                </a-troika-text>
+            </a-entity>
+
+            <!-- Painel 5: O Primeiro Mapa Tridimensional da Via Láctea -->
+            <a-entity
+                wall-panel="angle: 300; radius: 1.5; width: 0.8; height: 2.35; textWidth: 0.5; titleHeight: 1.30; titleWidth: 0.6; mediaHeight: 1.74"
+                panel-audio="src: Audios/sala2painel5.m4a"
+                material="src: assets/Textures/plastered_wall_diff_2k.webp; repeat: 1 3">
+                <a-entity exhibit-panel-new="src: assets/Telescopio_Herschel/via_lactea.webp; width: 0.65;"></a-entity>
+                <a-troika-text value="O Primeiro Mapa Tridimensional da Via Láctea"></a-troika-text>
+                <a-troika-text
+                    value="Superior: Mapeamento da Via Láctea por William Herschel (1785).\nInferior: Visão panorâmica da Via Láctea realizada pelo observatório Gaia (ESA/Gaia/DPAC)."></a-troika-text>
+                <a-troika-text
+                    value='\t\t Na parte superior, a Figura 4 do artigo publicado por William Herschel em 1785 na "Philosophical Transactions of the Royal Society" representa o primeiro mapeamento da Via Láctea como um corte transversal de um disco estelar achatado e irregular, enquanto a imagem inferior apresenta a visão panorâmica de todo o céu da Via Láctea obtida pela missão Gaia, a partir da órbita da Terra para criar o maior e mais preciso mapa tridimensional da nossa galáxia. Essa visão apoia-se em medições de alta precisão de quase 1,7 bilhões de estrelas, catálogo que viabilizou estudos transformadores sobre a estrutura, origem e evolução da Via Láctea.\n\n\t\t Por trás do diagrama pioneiro de 1785 esteve o trabalho indispensável de Caroline Herschel, que registrava minuciosamente as contagens estelares e coordenadas celestes durante as noites de observação e realizava os elaborados cálculos matemáticos para tratar os dados, viabilizando assim o desenho do primeiro mapa da nossa galáxia.'>
+                </a-troika-text>
+            </a-entity>
+
+        </a-entity>
+    </template>
+
+    <!-- =========================================================================
+       TEMPLATE: SALA 3 - AS SONDAS VOYAGER (1977)
+       ========================================================================= -->
+    <template id="template-sala3">
+        <a-entity id="sala3-content">
+
+            <!-- Música de fundo -->
+            <a-entity
+                sound="src: assets/Music/Kevin_MacLeod_-_Erik_Satie_Gymnopedie_No_1.mp3; autoplay: true; loop: true; positional: false; volume: 0.5"></a-entity>
+
+            <a-light type="ambient" color="white" intensity="0.3"></a-light>
+            <a-light type="directional" color="white" intensity="0.8" position="-1 2 1"></a-light>
+
+            <!-- Skybox -->
+            <a-sky src="assets/Sky/starmap_2020_4k.webp" radius="5000"></a-sky>
+
+            <!-- Piso e Contorno da Sala -->
+            <a-entity room-floor="color: #0b111e; ringColor: #1c3b66; roughness: 0.9"></a-entity>
+
+            <!-- Tóten de Retorno ao Hall -->
+            <a-entity totem-teleport="target: hall; label: Retornar\nao Hall; angle: 330; radius: 1.5"></a-entity>
+
+            <!-- Modelo Central Manipulável -->
+            <a-entity pedestal="color: #182236">
+                <a-entity id="voyager-mini" grabbable asset-model="src: Voyagers/voyager_LR.glb"
+                    position="0.004 0.66 0.344" rotation="0 0 0" scale="0.08 0.08 0.08">
+                </a-entity>
+            </a-entity>
+
+            <!-- Modelo em Escala Real -->
+            <a-entity position="0 2.33 -5.24"
+                animation="property: rotation; to: 0 360 0; loop: true; dur: 45000; easing: linear">
+                <a-entity id="voyager-fullscale" asset-model="src: Voyagers/voyager_LR.glb" rotation="-5 -139 -41"
+                    scale="1.0 1.0 1.0">
+                </a-entity>
+            </a-entity>
+
+            <!-- PAINÉIS EXPOSITIVOS -->
+
+            <!-- Painel 1: O Disco de Ouro (Golden Record) -->
+            <a-entity
+                wall-panel="angle: 60; radius: 1.5; width: 0.8; height: 2.25; textWidth: 0.5; titleHeight: 1.45; titleWidth: 0.6; mediaHeight: 1.70"
+                panel-audio="src: Audios/sala3painel1.m4a"
+                material="src: assets/Textures/plastered_wall_diff_2k.webp; repeat: 1 3">
+                <a-entity exhibit-panel-new="src: assets/Voyagers/golden_disks.webp; width: 0.7;"></a-entity>
+                <a-troika-text value="O Disco de Ouro (Golden Record)"></a-troika-text>
+                <a-troika-text
+                    value="O Disco de Ouro das Sondas Voyager 1 e 2. NASA / JPL-Caltech, 1977."></a-troika-text>
+                <a-troika-text
+                    value='\t\t Além dos instrumentos científicos, as sondas Voyager 1 e 2 (1977) carregam uma mensagem para outras civilizações ou para o futuro da própria humanidade. O conjunto é composto por duas peças físicas principais. À esquerda, a capa de proteção de alumínio banhado a ouro que cobre o disco, em cuja face externa estão gravados diagramas, mapas e instruções de reprodução (como o mapa de púlsares para localizar a Terra e o átomo de hidrogênio como unidade de medida). À direita, o disco gramofônico de cobre banhado a ouro. Seu conteúdo reúne 116 imagens codificadas em sinal analógico, saudações em 55 línguas, sons da Terra e 90 minutos de músicas de diversas culturas.'>
+                </a-troika-text>
+            </a-entity>
+
+            <!-- Painel 2: O Pálido Ponto Azul -->
+            <a-entity
+                wall-panel="angle: 120; radius: 1.5; width: 0.8; height: 2.35; textWidth: 0.5; titleHeight: 1.35; titleWidth: 0.6; mediaHeight: 1.75"
+                panel-audio="src: Audios/sala3painel2.m4a"
+                material="src: assets/Textures/plastered_wall_diff_2k.webp; repeat: 1 3">
+                <a-entity exhibit-panel-new="src: assets/Voyagers/pale-blue-dot-revised.webp; width: 0.65;"></a-entity>
+                <a-troika-text value="O Pálido Ponto Azul"></a-troika-text>
+                <a-troika-text
+                    value="A Terra a mais de 6 bilhões de km pela Voyager 1 (14/02/1990).\nNASA / JPL-Caltech."></a-troika-text>
+                <a-troika-text
+                    value='\t\t Em 14 de fevereiro de 1990, a pedido de Carl Sagan, a Voyager 1 virou suas câmeras para trás, a cerca de 6 bilhões de km, e fotografou a Terra como um pequeno ponto suspenso num raio de luz solar. A imagem tornou-se símbolo da fragilidade e pequenez do nosso planeta no cosmos.\n\n"[...] Não há talvez melhor demonstração da tolice das vaidades humanas do que esta imagem distante do nosso mundo minúsculo. Para mim, ela sublinha a nossa responsabilidade de nos tratarmos com mais bondade uns com os outros, e de preservar e amar o pálido ponto azul, o único lar que jamais conhecemos."\n\t — Carl Sagan (1994)'>
+                </a-troika-text>
+            </a-entity>
+
+            <!-- Painel 3: O Grand Tour dos planetas gigantes -->
+            <a-entity
+                wall-panel="angle: 180; radius: 1.5; width: 0.8; height: 2.35; textWidth: 0.5; titleHeight: 1.32; titleWidth: 0.6; mediaHeight: 1.76"
+                panel-audio="src: Audios/sala3painel3.m4a"
+                material="src: assets/Textures/plastered_wall_diff_2k.webp; repeat: 1 3">
+                <a-entity
+                    exhibit-panel-new="src: assets/Voyagers/Voyager_probes_with_the_outer_worlds.webp; width: 0.55;"></a-entity>
+                <a-troika-text value="O Grand Tour dos Planetas Gigantes"></a-troika-text>
+                <a-troika-text
+                    value="Don Davis, Voyager Mission, c. 1980s.\nAcrílico sobre painel. Acervo NASA / JPL-Caltech."></a-troika-text>
+                <a-troika-text
+                    value='\t\t Aproveitando um alinhamento planetário raro, que ocorre a cada 176 anos, as Voyagers sobrevoaram Júpiter, Saturno, Urano e Netuno, revelando vulcanismo ativo em luas e anéis planetários complexos, como a Grande Mancha Vermelha de Júpiter e a Grande Mancha Escura de Netuno.\n\t\t Esta ilustração artística encomendada pelo JPL combinou técnicas tradicionais de pintura com cálculos computacionais para projetar os anéis e luas em escala precisa, incluindo hipóteses de arcos em Netuno baseadas em dados terrestres da época.'>
+                </a-troika-text>
+            </a-entity>
+
+            <!-- Painel 4: Cruzando a heliopausa -->
+            <a-entity
+                wall-panel="angle: 240; radius: 1.5; width: 0.8; height: 2.25; textWidth: 0.5; titleHeight: 1.44; titleWidth: 0.6; mediaHeight: 1.70; textGap: 0.04"
+                panel-audio="src: Audios/sala3painel4.m4a"
+                material="src: assets/Textures/plastered_wall_diff_2k.webp; repeat: 1 3">
+                <a-entity exhibit-panel-new="src: assets/Voyagers/Heliosphere-Chart.webp; width: 0.7;"></a-entity>
+                <a-troika-text value="Cruzando a Heliopausa"></a-troika-text>
+                <a-troika-text value="PIA22835 -- Dois Viajantes Interestelares.\nNASA / JPL-Caltech."></a-troika-text>
+                <a-troika-text
+                    value='\t\t A ilustração retrata as posições atuais aproximadas das sondas Voyager 1 e 2 navegando pelo espaço interestelar, já localizadas além dos limites da heliosfera -- a "bolha protetora" gerada pelo Sol que se estende além da órbita de Plutão. A Voyager 1 alcançou o espaço interestelar ao cruzar a heliopausa em agosto de 2012, enquanto a Voyager 2 ultrapassou-a em novembro de 2018. As imagens ilustram a distinção entre o vento solar no interior do sistema e o plasma do meio interestelar no espaço exterior. Atualmente encontram-se a mais de 20 bilhões de km da Terra.'>
+                </a-troika-text>
+            </a-entity>
+
+            <!-- Painel 5: Trajetória da Voyager 1 pelo Sistema Solar -->
+            <a-entity
+                wall-panel="angle: 300; radius: 1.5; width: 0.8; height: 2.25; textWidth: 0.5; titleHeight: 1.44; titleWidth: 0.6; mediaHeight: 1.70"
+                panel-audio="src: Audios/sala3painel5.m4a"
+                material="src: assets/Textures/plastered_wall_diff_2k.webp; repeat: 1 3">
+                <a-entity exhibit-panel-new="src: assets/Voyagers/Voyager1SpedUp.mp4; width: 0.7;"></a-entity>
+                <a-troika-text value="Trajetória da Voyager 1 pelo Sistema Solar"></a-troika-text>
+                <a-troika-text
+                    value="Animação da trajetória da missão.\nNASA Scientific Visualization Studio (SVS ID: 4139), 2017."></a-troika-text>
+                <a-troika-text
+                    value='\t\t Esta animação acompanha a trajetória da sonda Voyager 1, lançada em 1977 para explorar os planetas gigantes do Sistema Solar. Após sobrevoar Júpiter e Saturno, a nave foi redirecionada rumo ao espaço profundo. Para resumir quatro décadas de missão, a passagem do tempo acelera ao longo do vídeo, indo de 5 dias por segundo no início até cerca de 11 meses por segundo após os encontros planetários. A animação também ilustra as fronteiras da heliosfera e as redes geométricas de interação com o vento solar.'>
+                </a-troika-text>
+            </a-entity>
+
+        </a-entity>
+    </template>
+
+    <!-- =========================================================================
+       TEMPLATE: SALA 4 - O TELESCÓPIO ESPACIAL HUBBLE (1990)
+       ========================================================================= -->
+    <template id="template-sala4">
+        <a-entity id="sala4-content">
+
+            <a-entity
+                sound="src: assets/Music/HOLST__The_Planets,_Op._32_7._Neptune,_the_Mystic__-__The_President's_Own__U.S._Marine_Band.opus.mp3; autoplay: true; loop: true; positional: false; volume: 0.3"></a-entity>
+
+            <a-light type="ambient" color="white" intensity="0.3"></a-light>
+            <a-light type="directional" color="white" intensity="0.8" position="-1 2 1"></a-light>
+
+            <!-- Skybox -->
+            <a-sky src="assets/Sky/starmap_2020_4k.webp" radius="5000"></a-sky>
+
+            <!-- Piso e Contorno da Sala -->
+            <a-entity room-floor="color: #090d18; ringColor: #01677d; roughness: 0.9"></a-entity>
+
+            <!-- Tóten de Retorno ao Hall -->
+            <a-entity totem-teleport="target: hall; label: Retornar\nao Hall; angle: 324; radius: 1.5"></a-entity>
+
+            <!-- Modelo Central Manipulável -->
+            <a-entity pedestal="color: #162035">
+                <a-entity id="hubble-mini" grabbable asset-model="src: Hubble/hubble_LR.glb" position="0 0.4 0"
+                    rotation="0 0 0" scale="0.04 0.04 0.04">
+                </a-entity>
+            </a-entity>
+
+            <!-- Modelo em Escala Real -->
+            <a-entity id="hubble-fullscale" asset-model="src: Hubble/hubble_LR.glb" position="0 4.0 -7"
+                rotation="15 -30 10" scale="1 1 1"
+                animation="property: rotation; to: 15 330 10; loop: true; dur: 45000; easing: linear">
+            </a-entity>
+
+            <!-- PAINÉIS EXPOSITIVOS -->
+
+            <!-- Painel 1 : Hubble Deep Field -->
+            <a-entity
+                wall-panel="angle: 72; radius: 1.5; width: 0.8; height: 2.55; textWidth: 0.5; titleHeight: 1.56; titleWidth: 0.6; mediaHeight: 1.92"
+                panel-audio="src: Audios/sala5painel1.m4a"
+                material="src: assets/Textures/plastered_wall_diff_2k.webp; repeat: 1 3">
+                <a-entity exhibit-panel-new="src: assets/Hubble/HubbleDeepField.800px.webp; width: 0.65;"></a-entity>
+                <a-troika-text value="Hubble Deep Field (1995)"></a-troika-text>
+                <a-troika-text
+                    value="Imagem do Campo Profundo do Telescópio Espacial Hubble.\nRobert Williams (NASA, ESA, STScI), 1996."></a-troika-text>
+                <a-troika-text
+                    value='\t\t A imagem do Campo Profundo do Hubble nos mostra como um minúsculo pedaço do céu revelou os segredos do universo jovem. Em dezembro de 1995, o telescópio foi apontado para uma região aparentemente vazia na constelação da Ursa Maior -- equivalente a olhar para uma bola de tênis a cem metros de distância. Ao longo de dez dias consecutivos, acumulou 342 exposições individuais com sua câmera principal para capturar a luz fraca de objetos remotos.\n\n\t\tO resultado revolucionou a astronomia ao revelar quase três mil galáxias onde parecia não haver nada. Por ter evitado estrelas da Via Láctea, praticamente cada ponto brilhante é uma galáxia distante. Três anos depois, o experimento foi repetido no hemisfério sul com resultados semelhantes, confirmando que o universo é homogêneo em grande escala. Campanhas posteriores originaram o Campo Ultraprofundo (2004) e o Campo Extremamente Profundo (2012).'>
+                </a-troika-text>
+            </a-entity>
+
+            <!-- Painel 2: Os Pilares da Criação -->
+            <a-entity
+                wall-panel="angle: 144; radius: 1.5; width: 0.8; height: 2.55; textWidth: 0.5; titleHeight: 1.56; titleWidth: 0.6; mediaHeight: 1.92"
+                panel-audio="src: Audios/sala5painel2.m4a"
+                material="src: assets/Textures/plastered_wall_diff_2k.webp; repeat: 1 3">
+                <a-entity exhibit-panel-new="src: assets/Hubble/Eagle_nebula_pillars.webp; width: 0.65;"></a-entity>
+                <a-troika-text value="Os Pilares da Criação"></a-troika-text>
+                <a-troika-text
+                    value="Pilares de gás e poeira na Nebulosa da Águia (M16).\nNASA, Jeff Hester e Paul Scowen (ASU), 1995."></a-troika-text>
+                <a-troika-text
+                    value='\t\t Os Pilares da Criação é uma das imagens mais icônicas da história da exploração espacial, capturada pelo Hubble a partir de monumentais colunas de gás e poeira interestelar na Nebulosa da Águia, situada entre 6.500 e 7.000 anos-luz da Terra.\n\n\t\tEssas colunas majestosas funcionam como verdadeiros berçários onde novas estrelas estão ativamente nascendo, enquanto são lentamente erodidas e esculpidas pela intensa radiação ultravioleta emitida pelas estrelas jovens recém-formadas ao redor.\n\n\t\tA denominação "Pilares da Criação" de forte teor simbólico inspira-se nas colunas que sustentam o cosmos. Ao longo das décadas, a região continuou a ser estudada em múltiplos comprimentos de onda, aprofundando o conhecimento de como a matéria se organiza para dar origem a novos sistemas estelares e planetários.'>
+                </a-troika-text>
+            </a-entity>
+
+            <!-- Painel 3: A Miopia do Hubble e a Correção Óptica -->
+            <a-entity
+                wall-panel="angle: 216; radius: 1.5; width: 0.8; height: 2.60; textWidth: 0.5; titleHeight: 1.50; titleWidth: 0.6; mediaHeight: 1.95; textGap: 0.03"
+                panel-audio="src: Audios/sala5painel3.m4a"
+                material="src: assets/Textures/plastered_wall_diff_2k.webp; repeat: 1 3">
+                <a-entity
+                    exhibit-panel-new="src: assets/Hubble/hubble_optical_correction.webp; width: 0.55;"></a-entity>
+                <a-troika-text value="A Miopia do Hubble e a Correção Óptica"></a-troika-text>
+                <a-troika-text
+                    value="Acima: Instalação do módulo COSTAR na missão STS-61 (1993).\nAbaixo: Galáxia M100 antes e depois da correção.\nNASA, 1993."></a-troika-text>
+                <a-troika-text
+                    value='\t\t O início das operações do Hubble foi marcado por uma falha: seu espelho primário foi polido com uma aberração esférica nas bordas de apenas 1,3 mícron, o bastante para impedir que a luz se concentrasse no ponto focal e gerar imagens borradas, como na visão míope humana.\n\n\t\t Para solucionar o problema sem trazê-lo de volta à Terra, a NASA realizou em dezembro de 1993 a histórica missão STS-61 usando o ônibus espacial Endeavour. Astronautas instalaram a câmera WFPC2 e o módulo corretor COSTAR, instrumentos que funcionaram essencialmente como óculos de alta precisão para o telescópio.\n\n\t\t A comparação da galáxia M100 antes e depois da manutenção demonstra o sucesso do reparo, permitindo ao observatório alcançar sua lendária nitidez e iniciar três décadas de descobertas sem precedentes.'>
+                </a-troika-text>
+            </a-entity>
+
+            <!-- Painel 4: Colisão do Cometa Shoemaker-Levy 9 com Júpiter -->
+            <a-entity
+                wall-panel="angle: 288; radius: 1.5; width: 0.8; height: 2.50; textWidth: 0.5; titleHeight: 1.60; titleWidth: 0.6; mediaHeight: 1.92"
+                panel-audio="src: Audios/sala5painel4.m4a"
+                material="src: assets/Textures/plastered_wall_diff_2k.webp; repeat: 1 3">
+                <a-entity exhibit-panel-new="src: assets/Hubble/Shoemaker-Levy_collision.webp; width: 0.7;"></a-entity>
+                <a-troika-text value="Colisão do Cometa Shoemaker-Levy 9 com Júpiter"></a-troika-text>
+                <a-troika-text
+                    value="Impacto do primeiro fragmento do cometa na atmosfera de Júpiter.\nH. Hammel (MIT) e NASA, 17/07/1994."></a-troika-text>
+                <a-troika-text
+                    value='\t\t Em 1994, o Hubble registrou em detalhes o impacto de fragmentos do cometa Shoemaker-Levy 9 contra a atmosfera de Júpiter, tornando-se a primeira colisão entre corpos do Sistema Solar observada diretamente pela humanidade.\n\n\t\t A imagem mostra o local de impacto do primeiro fragmento (Fragmento A) no topo das nuvens de Júpiter. A colisão deixou uma marca escura em formato de crescente no canto inferior esquerdo do planeta, formada por detritos da entrada do cometa e materiais expelidos da atmosfera profunda.\n\n\t\t O cometa havia se fragmentado em 1992 devido às forças de maré gravitacionais de Júpiter, e seus pedaços atingiram o planeta com energia estimada em até um milhão de bombas de hidrogênio, ressaltando o dinamismo e os riscos de impactos cósmicos.'>
+                </a-troika-text>
+            </a-entity>
+
+        </a-entity>
+    </template>
+
+    <!-- =========================================================================
+       TEMPLATE: SALA 5 - OS ROVERS MARCIANOS (1997)
+       ========================================================================= -->
+    <template id="template-sala5">
+        <a-entity id="sala5-content"
+            environment="preset: yavapai; skyType: gradient; skyColor: #472b22; horizonColor: #7ba1ba;lighting: distant;lightPosition: 0 0.15 -1;shadow: true;shadowSize: 15;fog: 0.15">
+
+            <a-entity
+                sound="src: assets/Music/Bolero-Maurice_Ravel-Berlin_Symphonic_Orchestra-Ferenc_Fricsay-November_1959.mp3; autoplay: true; loop: true; positional: false; volume: 0.1"></a-entity>
+
+            <!-- Tóten de Retorno ao Hall -->
+            <a-entity totem-teleport="target: hall; label: Retornar\nao Hall; angle: 324; radius: 1.5"></a-entity>
+
+            <!-- Modelo Central Manipulável -->
+            <a-entity pedestal="color: #221410">
+                <a-entity>
+                    <a-entity id="curiosity-mini" grabbable asset-model="src: Curiosity/curiosity_LR.glb"
+                        position="0 0.15 0" rotation="0 0 0" scale="0.13 0.13 0.13">
+                    </a-entity>
+                </a-entity>
+            </a-entity>
+
+            <!-- Modelo em Escala Real -->
+            <a-entity id="curiosity-fullscale" asset-model="src: Curiosity/curiosity_LR.glb" position="0 0 -3.5"
+                rotation="0 180 0" scale="1.0 1.0 1.0"
+                animation="property: rotation; to: 0 540 0; loop: true; dur: 50000; easing: linear">
+            </a-entity>
+
+            <!-- PAINÉIS EXPOSITIVOS -->
+
+            <!-- Painel 1 : Sojourner — o primeiro rover (1997) -->
+            <a-entity
+                wall-panel="angle: 72; radius: 1.5; width: 0.8; height: 2.35; textWidth: 0.5; titleHeight: 1.38; titleWidth: 0.6; mediaHeight: 1.72"
+                panel-audio="src: Audios/sala4painel1.m4a"
+                material="src: assets/Textures/plastered_wall_diff_2k.webp; repeat: 1 3">
+                <a-entity exhibit-panel-new="src: assets/Curiosity/Sojourner.webp; width: 0.65;"></a-entity>
+                <a-troika-text value="Sojourner -- O Primeiro Rover (1997)"></a-troika-text>
+                <a-troika-text
+                    value="Rover Sojourner fotografado em solo marciano pelo módulo de pouso Pathfinder.\nNASA / JPL-Caltech, 1997."></a-troika-text>
+                <a-troika-text
+                    value='\t\t Parte da missão Mars Pathfinder, o Sojourner foi o primeiro veículo a rodar sobre a superfície de outro planeta. Do tamanho de um micro-ondas, operou por 83 dias, validando a tecnologia e a mobilidade que tornariam possível todos os grandes rovers seguintes. Seu nome é uma homenagem a Sojourner Truth, célebre abolicionista e defensora dos direitos das mulheres.\n\n\tCuriosidade: a engenheira aeroespacial brasileira Jacqueline Lyra, responsável pelo controle térmico da missão, foi convidada a escolher a trilha sonora do "despertar matinal" do veículo em Marte. Em 11 de julho de 1997, ela enviou a música "Coisinha do Pai" (na voz de Beth Carvalho, de Jorge Aragão, Almir Guineto e Luiz Carlos), tornando o samba brasileiro a primeira música transmitida a outro mundo.'>
+                </a-troika-text>
+            </a-entity>
+
+            <!-- Painel 2: Autorretrato do Curiosity -->
+            <a-entity
+                wall-panel="angle: 144; radius: 1.5; width: 0.8; height: 2.35; textWidth: 0.5; titleHeight: 1.34; titleWidth: 0.6; mediaHeight: 1.75"
+                panel-audio="src: Audios/sala4painel2.m4a"
+                material="src: assets/Textures/plastered_wall_diff_2k.webp; repeat: 1 3">
+                <a-entity exhibit-panel-new="src: assets/Curiosity/Curiosity_SelfPortrait.webp; width: 0.5;"></a-entity>
+                <a-troika-text value="Autorretrato do Curiosity"></a-troika-text>
+                <a-troika-text
+                    value='Autorretrato no sítio "Big Sky", Cratera Gale.\nNASA / JPL-Caltech / MSSS, 2015.'></a-troika-text>
+                <a-troika-text
+                    value='\t\t Este autorretrato do rover Curiosity mostra o veículo no sítio de perfuração "Big Sky", onde coletou amostras do Monte Sharp, no interior da Cratera Gale. A imagem combina dezenas de fotografias capturadas pela câmera MAHLI, instalada na extremidade do seu braço robótico articulado.\n\t\t O próprio braço não aparece no mosaico final por conta do ângulo das tomadas, embora sua sombra seja visível sobre as rochas. Em operação contínua desde agosto de 2012, o Curiosity investiga a geologia marciana e as evidências de antigos ambientes habitáveis no passado do planeta vermelho.'>
+                </a-troika-text>
+            </a-entity>
+
+            <!-- Painel 3: Ingenuity e o primeiro voo em outro planeta -->
+            <a-entity
+                wall-panel="angle: 216; radius: 1.5; width: 0.8; height: 2.25; textWidth: 0.5; titleHeight: 1.40; titleWidth: 0.6; mediaHeight: 1.72"
+                panel-audio="src: Audios/sala4painel3.m4a"
+                material="src: assets/Textures/plastered_wall_diff_2k.webp; repeat: 1 3">
+                <a-entity exhibit-panel-new="src: assets/Curiosity/Ingenuity.webp; width: 0.7;"></a-entity>
+                <a-troika-text value="Ingenuity e o Primeiro Voo em Outro Planeta"></a-troika-text>
+                <a-troika-text
+                    value="Helicóptero Ingenuity registrado pela câmera Mastcam-Z do rover Perseverance.\nNASA / JPL-Caltech / ASU / Simeon Schmauß, 2023."></a-troika-text>
+                <a-troika-text
+                    value="\t\t Em 19 de abril de 2021, o pequeno helicóptero Ingenuity, transportado até Marte acoplado ao rover Perseverance, realizou o primeiro voo motorizado e controlado na atmosfera rarefeita de outro corpo celeste.\n\n\t Esta fotografia foi registrada pela câmera Mastcam-Z em 18 de abril de 2023, dois anos após o voo inaugural. A imagem oferece uma das visões mais nítidas e detalhadas da aeronave em solo marciano, cuja missão de demonstração tecnológica superou todas as expectativas e abriu caminho para a exploração aérea extraterrestre.">
+                </a-troika-text>
+            </a-entity>
+
+            <!-- Painel 4: Moléculas Orgânicas Inéditas em Marte -->
+            <a-entity
+                wall-panel="angle: 288; radius: 1.5; width: 0.8; height: 2.30; textWidth: 0.5; titleHeight: 1.42; titleWidth: 0.6; mediaHeight: 1.70"
+                panel-audio="src: Audios/sala4painel4.m4a"
+                material="src: assets/Textures/plastered_wall_diff_2k.webp; repeat: 1 3">
+                <a-entity
+                    exhibit-panel-new="src: assets/Curiosity/e2-curiosity-drill-holes-at-mary-anning-pia24173.webp; width: 0.7;"></a-entity>
+                <a-troika-text value="Moléculas Orgânicas Inéditas em Marte"></a-troika-text>
+                <a-troika-text
+                    value='Furos de perfuração do Curiosity, destacando o ponto "Mary Anning 3".\nNASA / JPL-Caltech / MSSS, 2020.'></a-troika-text>
+                <a-troika-text
+                    value='\t\t Em uma descoberta histórica, o rover Curiosity revelou o conjunto de moléculas orgânicas mais diverso já identificado em Marte. A partir do pó extraído do furo "Mary Anning 3" no Mount Sharp, cientistas detectaram 21 moléculas contendo carbono, preservadas por bilhões de anos em sedimentos de argila de um antigo leito de lago.\n\n\t O instrumento por trás desse feito é o SAM (Sample Analysis at Mars), um minilaboratório interno que aqueceu a amostra com técnicas de química úmida para volatilizar e identificar compostos químicos complexos, confirmando que Marte reuniu condições químicas essenciais para o surgimento de vida no passado.'>
+                </a-troika-text>
+            </a-entity>
+
+        </a-entity>
+    </template>
+
+    <!-- =========================================================================
+       TEMPLATE: SALA 6 - O TELESCÓPIO JAMES WEBB (2021)
+       ========================================================================= -->
+    <template id="template-sala6">
+        <a-entity id="sala6-content">
+
+            <a-entity
+                sound="src: assets/Music/webb_audios.mp3; autoplay: true; loop: true; positional: false; volume: 0.15"></a-entity>
+
+            <a-light type="ambient" color="white" intensity="0.3"></a-light>
+            <a-light type="directional" color="white" intensity="0.8" position="-1 2 1"></a-light>
+
+            <!-- Skybox -->
+            <a-sky src="assets/Sky/starmap_2020_4k.webp" radius="5000"></a-sky>
+
+            <!-- Piso e Contorno da Sala -->
+            <a-entity room-floor="color: #0d0f1a; ringColor: #735f1f; roughness: 0.9"></a-entity>
+
+            <!-- Tóten de Retorno ao Hall -->
+            <a-entity totem-teleport="target: hall; label: Retornar\nao Hall; angle: 330; radius: 1.5"></a-entity>
+
+            <!-- Modelo Central Manipulável -->
+            <a-entity pedestal="color: #1a1829">
+                <a-entity>
+                    <a-entity id="jwst-mini" grabbable asset-model="src: Webb/jwst_LR.glb" position="-0.114 0.35 0"
+                        rotation="0 0 0" scale="0.03 0.03 0.03">
+                    </a-entity>
+                </a-entity>
+            </a-entity>
+
+            <!-- Modelo em Escala Real -->
+            <a-entity id="jwst-fullscale" asset-model="src: Webb/jwst_LR.glb" position="0 -4.2 -8" rotation="15 -30 10"
+                scale="1.0 1.0 1.0"
+                animation="property: rotation; to: 15 330 10; loop: true; dur: 45000; easing: linear">
+            </a-entity>
+
+            <!-- PAINÉIS EXPOSITIVOS -->
+
+            <!-- Painel 1: SMACS 0723 -- A Primeira Imagem Profunda do Webb -->
+            <a-entity
+                wall-panel="angle: 60; radius: 1.5; width: 0.8; height: 2.35; textWidth: 0.5; titleHeight: 1.36; titleWidth: 0.6; mediaHeight: 1.72"
+                panel-audio="src: Audios/sala6painel1.m4a"
+                material="src: assets/Textures/plastered_wall_diff_2k.webp; repeat: 1 3">
+                <a-entity exhibit-panel-new="src: assets/Webb/SMACS0723.webp; width: 0.65;"></a-entity>
+                <a-troika-text value="SMACS 0723 -- O Primeiro Campo Profundo"></a-troika-text>
+                <a-troika-text
+                    value="Aglomerado de galáxias lente SMACS 0723 no infravermelho próximo.\nNASA, ESA, CSA, STScI, 2022."></a-troika-text>
+                <a-troika-text
+                    value='\t\t Divulgada em julho de 2022, esta foi a primeira imagem científica colorida do Webb, revelando milhares de galáxias no aglomerado SMACS 0723 graças à alta sensibilidade no infravermelho próximo e ao efeito de lente gravitacional.\n\n\t\t A massiva galáxia elíptica central e seu aglomerado curvam e ampliam a luz de galáxias situadas a grandes distâncias atrás delas, agindo como um telescópio cósmico que distorce a luz em arcos luminosos e revela objetos do universo primordial.'>
+                </a-troika-text>
+            </a-entity>
+
+            <!-- Painel 2: Os Pilares da Criação em Infravermelho -->
+            <a-entity
+                wall-panel="angle: 120; radius: 1.5; width: 0.8; height: 2.35; textWidth: 0.5; titleHeight: 1.38; titleWidth: 0.6; mediaHeight: 1.72"
+                panel-audio="src: Audios/sala6painel2.m4a"
+                material="src: assets/Textures/plastered_wall_diff_2k.webp; repeat: 1 3">
+                <a-entity
+                    exhibit-panel-new="src: assets/Webb/pillars_of_creation_webb_and_hubble_LR.webp; width: 0.7;"></a-entity>
+                <a-troika-text value="Os Pilares da Criação em Infravermelho"></a-troika-text>
+                <a-troika-text
+                    value="Visão comparativa: Hubble em luz visível (esq.) e Webb em infravermelho (dir.).\nNASA, ESA, CSA, STScI."></a-troika-text>
+                <a-troika-text
+                    value='\t\t O telescópio Hubble consagrou os Pilares da Criação em luz visível (à esquerda). A visão do James Webb no infravermelho próximo (à direita) penetra as espessas cortinas de poeira interestelar da Nebulosa da Águia, tornando as colunas semitranslúcidas.\n\n\t\t O registro revela inúmeras estrelas avermelhadas recém-nascidas que se formam no interior dos pilares de gás, além de detalhar a interação do hidrogênio atômico com a intensa radiação cósmica.'>
+                </a-troika-text>
+            </a-entity>
+
+            <!-- Painel 3: Atmosfera do Exoplaneta WASP-39 b -->
+            <a-entity
+                wall-panel="angle: 180; radius: 1.5; width: 0.8; height: 2.35; textWidth: 0.5; titleHeight: 1.38; titleWidth: 0.6; mediaHeight: 1.72"
+                panel-audio="src: Audios/sala6painel3.m4a"
+                material="src: assets/Textures/plastered_wall_diff_2k.webp; repeat: 1 3">
+                <a-entity exhibit-panel-new="src: assets/Webb/WASP-39b_atmosphere.webp; width: 0.7;"></a-entity>
+                <a-troika-text value="Atmosfera do Exoplaneta WASP-39 b"></a-troika-text>
+                <a-troika-text
+                    value="Espectro de transmissão atmosférica do planeta WASP-39 b.\nNASA, ESA, CSA, STScI, 2022."></a-troika-text>
+                <a-troika-text
+                    value='\t\t Ao analisar a luz da estrela passando através da atmosfera do gigante quente WASP-39 b durante seu trânsito, o Webb identificou pela primeira vez em um exoplaneta o dióxido de carbono (CO2) e o dióxido de enxofre (SO2).\n\n\t\t A presença de SO2 comprova a ocorrência de fotoquímica produzida pela luz estelar na atmosfera do planeta, acompanhada por dados inequívocos de vapor de água, monóxido de carbono, sódio e potássio.'>
+                </a-troika-text>
+            </a-entity>
+
+            <!-- Painel 4: A Galáxia MoM-z14 nos Limites do Universo -->
+            <a-entity
+                wall-panel="angle: 240; radius: 1.5; width: 0.8; height: 2.35; textWidth: 0.5; titleHeight: 1.38; titleWidth: 0.6; mediaHeight: 1.72"
+                panel-audio="src: Audios/sala6painel4.m4a"
+                material="src: assets/Textures/plastered_wall_diff_2k.webp; repeat: 1 3">
+                <a-entity
+                    exhibit-panel-new="src: assets/Webb/COSMOS_Field_MoM-z14_Galaxy_LR.webp; width: 0.7;"></a-entity>
+                <a-troika-text value="A Galáxia MoM-z14 na Fronteira Cósmica"></a-troika-text>
+                <a-troika-text
+                    value="Galáxia MoM-z14 observada pelos instrumentos NIRCam e NIRSpec.\nNASA, ESA, CSA, STScI, 2026."></a-troika-text>
+                <a-troika-text
+                    value='\t\t Detectada apenas 280 milhões de anos após o início do universo (redshift z = 14), a galáxia MoM-z14 é uma das mais distantes já observadas, com sua luz tendo viajado por mais de 13 bilhões de anos para chegar até nós.\n\n\t\t Surpreendentemente compacta e brilhante para essa era primordial, a descoberta expande o alcance da astronomia observacional em mais de 100 milhões de anos rumo ao Big Bang, desafiando modelos teóricos sobre a rápida formação das primeiras galáxias.'>
+                </a-troika-text>
+            </a-entity>
+
+            <!-- Painel 5: O Movimento Orbital do Webb no Ponto L2 -->
+            <a-entity
+                wall-panel="angle: 300; radius: 1.5; width: 0.8; height: 2.30; textWidth: 0.5; titleHeight: 1.40; titleWidth: 0.6; mediaHeight: 1.72"
+                panel-audio="src: Audios/sala6painel5.m4a"
+                material="src: assets/Textures/plastered_wall_diff_2k.webp; repeat: 1 3">
+                <a-entity exhibit-panel-new="src: assets/Webb/Animation_Of_Webb_Orbit_LR.webm; width: 0.7;"></a-entity>
+                <a-troika-text value="O Movimento Orbital do Webb no Ponto L2"></a-troika-text>
+                <a-troika-text
+                    value="Animação da órbita de halo do Webb ao redor de L2.\nNASA / GSFC, 2021."></a-troika-text>
+                <a-troika-text
+                    value='\t\t Localizado a 1,5 milhão de km da Terra, o James Webb orbita o ponto de equilíbrio gravitacional Lagrange L2 em uma trajetória de halo de cerca de seis meses por volta.\n\n\t\t Esse trajeto evita a sombra da Terra e da Lua, garantindo luz solar ininterrupta em seus painéis de energia e visão contínua do céu profundo, permitindo operações científicas 24 horas por dia, 7 dias por semana.'>
+                </a-troika-text>
+            </a-entity>
+
+        </a-entity>
+    </template>
+</body>
+
+</html>
