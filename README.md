@@ -50,6 +50,29 @@ A exposição é estruturada em um átrio central distribuidor e seis salas tem�
 * **Sala 5: Os Rovers Marcianos -- Curiosity (1997-presente):** Situada sobre o solo e sob o céu alaranjado da Cratera Gale em Marte. Trata da evolução da exploração robótica de superfície desde o pequeno *Sojourner* (com destaque para a participação da engenheira brasileira Jacqueline Lyra na missão), os autorretratos e furos de sondagem do *Curiosity* revelando moléculas orgânicas inéditas em leitos de lagos antigos, e o voo atmosférico pioneiro do helicóptero *Ingenuity*.
 * **Sala 6: O Telescópio Espacial James Webb (2021):** Localizada a 1,5 milhão de quilômetros da Terra, ao redor do ponto de equilíbrio gravitacional L2 de Lagrange. Apresenta o telescópio de espelhos hexagonais de berílio revestidos de ouro e escudo solar, suas observações pioneiras no infravermelho de galáxias primordiais como a MoM-z14 (280 milhões de anos pós-Big Bang), a detecção pioneira de dióxido de carbono e de enxofre em exoplanetas (WASP-39 b) e a revelação do campo profundo SMACS 0723.
 
+### Como Usar Esta Exposição
+
+Esta exposição foi projetada especialmente para imersão com óculos de Realidade Virtual (RV), tendo sido homologada e testada no **Meta Quest 2** (e dispositivos compatíveis com o Meta Quest Browser):
+
+1. **Rastreamento das Mãos (*Hand Tracking*):**
+   * Nas configurações do dispositivo Meta Quest, ative o **reconhecimento e rastreamento das mãos** (*Configurações > Movimento > Rastreamento das Mãos*). 
+   * Não é necessário o uso de controles manuais durante a visita: você pode colocar os controles de lado.
+2. **Espaço Seguro (*Guardian* / Limite):**
+   * Recomenda-se configurar uma área de limite (*Guardian*) estacionária ou fixa circular de aproximadamente **3 metros de diâmetro**, livre de obstáculos físicos, garantindo espaço confortável para girar o corpo e estender os braços.
+3. **Acesso pelo Navegador do Dispositivo:**
+   * Abra o aplicativo **Meta Quest Browser** (ou outro navegador com suporte completo a WebXR).
+   * Digite e acesse o endereço da exposição: [https://jocoteles.github.io/ExpoVIA/](https://jocoteles.github.io/ExpoVIA/).
+4. **Entrada na Realidade Virtual (WebXR):**
+   * Ao carregar a página, clique no botão com o ícone de **óculos de Realidade Virtual** no canto inferior direito da tela para entrar no modo imersivo.
+5. **Navegação e Interações no Espaço:**
+   * **Teletransporte entre Salas:** No Hall de Entrada e em cada uma das salas, aponte a mão e toque diretamente na esfera luminosa do tóten circular de teletransporte para alternar de ambiente.
+   * **Manipulação de Modelos 3D Centrais:** Aproxime a mão do instrumento sobre o pedestal central, feche os dedos em pinça (ou aperte a mão) para **segurar (*grab*)**, rotacionar e inspecionar detalhes do objeto em 360°.
+   * **Audioguia dos Painéis Expositivos:** Para ouvir a narração de qualquer painel histórico, basta estender a mão e **tocar fisicamente** na superfície do painel.
+6. **Adicionar à Biblioteca e Uso 100% Offline (PWA):**
+   * Para dispensar a conexão com a internet e ter acesso imediato em visitas futuras (em feiras, salas de aula ou museus), acesse o menu de opções (`...`) no canto da janela do Meta Quest Browser e selecione **"Adicionar à biblioteca"** (*Add to Library*) ou adicione aos **Favoritos**.
+   * Ao carregar a página pela primeira vez com internet, o Service Worker realiza o download de todos os modelos 3D, áudios e texturas para o cache permanente do dispositivo, emitindo o aviso "Assets carregados!" quando concluído.
+   * Uma vez adicionada à biblioteca, a **Exposição Virtual de Instrumentos Astronômicos** aparecerá como um atalho na sua lista principal de aplicativos e funcionará de forma **totalmente offline**, mesmo com o Wi-Fi desligado.
+
 ---
 
 ## 2. Origem dos Assets e Créditos
@@ -85,7 +108,7 @@ Para viabilizar a fluidez da expeirência imersiva e tempos viáveis de carregam
 * **Referências:**
   * Herschel Museum of Astronomy (Bath, UK): [herschelmuseum.org.uk](https://herschelmuseum.org.uk/)
   * Science Museum Group: [Herschel 7-foot Newtonian reflector](https://collection.sciencemuseumgroup.org.uk/objects/co8413200/herschel-7-foot-telescope-replica-telescope)
-  * Royal Museums Greenwich: [William Herschel's 7-foot telescope](https://www.rmg.co.uk/collections/objects/rmgc-object-11002)
+  * Royal Museums Greenwich: [William Herschel's 7-foot telescope](https://www.rmg.co.uk/collections/objects/rmgc-object-11122)
   * NASA Science / Hubble Mission: [240 Years Ago: Astronomer William Herschel Identifies Uranus as the Seventh Planet](https://science.nasa.gov/missions/hubble/240-years-ago-astronomer-william-herschel-identifies-uranus-as-the-seventh-planet/)
   * Obras originais de William e Caroline Herschel:
     * HERSCHEL, William. "Account of a Comet. By Mr. Herschel, F. R. S.; Communicated by Dr. Watson, Jun. of Bath, F. R. S.". *Philosophical Transactions of the Royal Society of London*, vol. 71, 1781, pp. 492--501. (Descoberta de Urano).
@@ -103,8 +126,7 @@ Para viabilizar a fluidez da expeirência imersiva e tempos viáveis de carregam
 * **Painel 3:** *O Grand Tour dos Planetas Gigantes* (`Voyager_probes_with_the_outer_worlds.webp`) -- Pintura em acrílico por Don Davis (c. 1980s), acervo NASA / JPL-Caltech -- Domínio Público.
 * **Painel 4:** *Cruzando a Heliopausa* (`Heliosphere-Chart.webp`) -- Diagrama de posições interestelares PIA22835, NASA / JPL-Caltech -- Domínio Público.
 * **Painel 5 (Vídeo):** *Trajetória da Voyager 1 pelo Sistema Solar* (`Voyager1SpedUp.mp4`) -- Animação orbital, NASA Scientific Visualization Studio (SVS ID: 4139, 2017) -- Domínio Público.
-* **Referências:**
-  * Royal Museums Greenwich: [Model of Voyager spacecraft](https://www.rmg.co.uk/collections/objects/rmgc-object-11122)
+* **Referências:**  
   * NASA Science: [Voyager 1's Pale Blue Dot](https://science.nasa.gov/mission/voyager/voyager-1s-pale-blue-dot/)
   * The Planetary Society: [Pale Blue Dot](https://www.planetary.org/worlds/pale-blue-dot/)
 
@@ -255,7 +277,7 @@ Modo padrão do repositório para distribuição final e uso autônomo sem fios 
 * **PWA com Precache Dinâmico por Varredura de Templates:**
   1. **Ativação Exclusiva:** O Service Worker (`sw.js`) é ativado exclusivamente quando a aplicação está hospedada no GitHub Pages (`*.github.io`).
   2. **Download Silencioso:** Na primeira visita com conexão à internet, a aplicação varre automaticamente as tags `<template>` de todas as 6 salas e solicita ao Service Worker o pré-carregamento de todos os ~90 MB de assets para o `CacheStorage`.
-  3. **Instalação Nativa:** O usuário pode clicar no menu do Meta Quest Browser e selecionar **Instalar Aplicativo**, criando um atalho direto na biblioteca do Quest.
+  3. **Atalho na Biblioteca:** O usuário pode clicar no menu de opções do Meta Quest Browser e selecionar **"Adicionar à biblioteca"** (*Add to Library*), criando um atalho direto na biblioteca de aplicativos do Quest.
   4. **Atualizações de Versão:** Ao publicar uma nova versão com atualização do nome do cache em `sw.js` (ex.: `v1` -> `v2`), o Service Worker detecta as alterações na próxima conexão, sincroniza os novos arquivos e subsitui versões antigas.
   5. **Funcionamento 100% Offline:** Uma vez completada a sincronização, os óculos podem ser desconectados da internet e a exposição funcionará perfeitamente offline, com acesso irrestrito a todas as salas, modelos 3D, áudios e vídeos.
 
